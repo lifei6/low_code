@@ -33,7 +33,8 @@ export default {
 
 <style lang="scss">
   .app {
-    width: 100%;
-    height: 715px;
+    width: 100vw;  /* 100% of viewport width */
+    height: 100vh; /* 100% of viewport height */
+    position: relative;
   }
 </style>
