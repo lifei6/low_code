@@ -1,8 +1,10 @@
 import { reactive } from 'vue'
+import { events } from './events'
 export function useBlockDragger(focusData, lastSelectBlock,data) {
     let dragstate = {
         startX: 0,
         startY: 0,
+        dragging:false,//记录是否在拖拽
     }
     // 记录辅助线
     const markLines = reactive({
@@ -12,6 +14,9 @@ export function useBlockDragger(focusData, lastSelectBlock,data) {
 
     // 鼠标按下触发的回调
     const mousedown = (e) => {
+        // 鼠标按下默认没有拖拽
+        dragstate.dragging =false
+
         // console.log(lastSelectBlock.value)
         // 获取辅助线信息函数
         const recordLines = () => {
@@ -30,7 +35,6 @@ export function useBlockDragger(focusData, lastSelectBlock,data) {
                     height:data.value.container.height,
                 }
             ]
-            console.log(arr)
             // 2.获取未选中元素A的信息
             arr.forEach((block)=>{
                 let { width: widthA, height: heightA, left: leftA, top: topA } = block
@@ -82,6 +86,13 @@ export function useBlockDragger(focusData, lastSelectBlock,data) {
     }
 
     const mousemove = (e) => {
+        // 鼠标移动设置为拖拽状态
+        if(!dragstate.dragging){
+            dragstate.dragging = true
+            //记录移动前状态
+            events.emit('start')
+        }
+
         // 记录当前的位置
         let { clientX: endX, clientY: endY } = e
         // 计算元素最新的top和left（实际还没更新，只是可以通过计算出来）
@@ -132,6 +143,11 @@ export function useBlockDragger(focusData, lastSelectBlock,data) {
         })
     }
     const mouseup = (e) => {
+        // 鼠标松开后记录最新的状态
+        if(dragstate.dragging){
+            events.emit('end')
+            dragstate.dragging = false
+        }
         // 放下后辅助线消失
         markLines.x = null
         markLines.y = null

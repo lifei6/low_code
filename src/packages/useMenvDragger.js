@@ -1,8 +1,11 @@
+import { events } from "./events";
+
+//物料区拖拽相关
 export const useMenvDragger = function(containerRef,data){
-        //物料区拖拽相关
         // 记录当前的拖拽元素
         let currentComponent = null;
-        //相关回调
+
+        //目标元素相关回调
         const dragenter = (e) => {
             e.dataTransfer.dropEffect = "move"
         }
@@ -19,6 +22,7 @@ export const useMenvDragger = function(containerRef,data){
             data.value.blocks.push(block)
             currentComponent=null
         }
+
         //1.开始拖拽
         const dragstart = (e, component) => {
             currentComponent = component
@@ -31,6 +35,9 @@ export const useMenvDragger = function(containerRef,data){
             containerRef.value.addEventListener('dragleave',dragleave)
             // 2.4松手的时候触发，根据拖拽的物料区预览区组件，生成一个渲染区组件
             containerRef.value.addEventListener('drop', drop)
+
+            // 记录拖拽前信息
+            events.emit('start')
         }
 
         // 3.拖拽结束清理事件
@@ -42,6 +49,9 @@ export const useMenvDragger = function(containerRef,data){
             containerRef.value.removeEventListener('dragleave',dragleave)
 
             containerRef.value.removeEventListener('drop',drop)
+
+            //记录拖拽后信息
+            events.emit('end')
         }
 
         return {

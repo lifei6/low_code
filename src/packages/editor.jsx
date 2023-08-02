@@ -10,6 +10,8 @@ import {useMenvDragger} from './useMenvDragger'
 import deepcopy from "deepcopy"
 import { useFocus } from "./useFocus"
 import { useBlockDragger } from "./useBlockDragger"
+import { useCommand } from "./useCommand"
+
 
 export default defineComponent({
     props: {
@@ -49,8 +51,21 @@ export default defineComponent({
         })
 
 
-        // 3.多个元素拖拽
+        // 3.多个元素拖拽和辅助线
         let {mousedown,markLines} =  useBlockDragger(focusData,lastSelectBlock,data)
+
+
+        // 4.菜单按钮
+        // 实现菜单功能
+        const {commands} = useCommand(data)
+        const buttons = [
+            {label:'撤销',icon:'icon-shangyibu',handler:commands.undo},
+            {label:'重做',icon:'icon-xiayibu',handler:commands.redo},
+
+        ]
+
+
+
 
         return () => (
             <div class="editor">
@@ -71,7 +86,16 @@ export default defineComponent({
                     })}
 
                 </div>
-                <div class="editor-top">顶部</div>
+                <div class="editor-top">
+                    {
+                        buttons.map((btn,idx)=>{
+                            return  <div class='editor-top-button' onClick={e=>btn.handler()}>
+                                <div class = {`iconfont ${btn.icon}`}></div>
+                                <div>{btn.label}</div>
+                            </div>
+                        })
+                    }
+                </div>
                 <div class="editor-right">右侧</div>
                 <div class="editor-container">
                     {/* 产生滚动条 */}
