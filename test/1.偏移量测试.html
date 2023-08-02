@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 300px;
+            height: 400px;
+            background-color: aqua;
+            margin: 50px auto 0;
+            overflow: scroll;
+
+        }
+
+        .content {
+            width: 400px;
+            height: 600px;
+            background-color: #bfa;
+
+            position: relative;
+        }
+
+        #btn {
+            position: absolute;
+            top: 50px;
+            left: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="content">
+            <button id="btn">测试</button>
+        </div>
+    </div>
+
+    <script>
+        function throttle(fn, delay) {
+            let preTime = Date.now()
+
+            return function () {
+                let context = this
+                let args = arguments
+                let nowTime = Date.now()
+                if (nowTime - preTime >= delay) {
+                    preTime = Date.now()
+                    return fn.apply(context, args)
+                }
+            }
+
+        }
+
+        const container = document.getElementsByClassName('container')[0]
+        const ctx = document.getElementsByClassName('content')[0]
+        const btn = document.getElementById('btn')
+        // console.log(ctx)
+        // console.log('offsetHeight', ctx.offsetHeight)
+        container.addEventListener('scroll', throttle(function(e){
+            console.log('clientHeight',e.target.clientHeight)
+            console.log('offsetHeight',e.target.offsetHeight)
+            console.log('scrollHeight', e.target.scrollHeight)
+            console.log('scrollTop', e.target.scrollTop)
+        },200))
+
+        ctx.addEventListener("click",(e)=>{
+            console.log('clientY',e.clientY)
+            console.log('clientX',e.clientX)
+            console.log('pageY',e.pageY)
+            console.log('pageX',e.pageX)
+        })
+
+        // console.log('offsetLeft', btn.offsetLeft)
+        // console.log('offsetTop', btn.offsetTop)
+
+
+
+
+    </script>
+</body>
+
+</html>

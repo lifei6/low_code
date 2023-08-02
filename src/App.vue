@@ -1,0 +1,39 @@
+<template>
+  <div class="app">
+    <Editor v-model="state"></Editor>
+  </div>
+</template>
+
+<script>
+import { provide, ref } from 'vue'
+// 导入组件
+import Editor from './packages/editor'
+
+// 导入数据源
+import data from './data.json'
+
+// 引入定义好的组件配置器（和路由器差不多）
+import {registerConfig} from './utils/editor-config'
+
+export default {
+  name: 'App',
+  components: {
+    Editor
+  },
+  setup(){
+    let state = ref(data)
+    // console.log(registerConfig)
+    provide('config',registerConfig)
+    return {
+      state
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+  .app {
+    width: 100%;
+    height: 715px;
+  }
+</style>
