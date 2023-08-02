@@ -11,6 +11,7 @@ import deepcopy from "deepcopy"
 import { useFocus } from "./useFocus"
 import { useBlockDragger } from "./useBlockDragger"
 import { useCommand } from "./useCommand"
+import { $dialog } from "@/components/Dialog"
 
 
 export default defineComponent({
@@ -61,6 +62,26 @@ export default defineComponent({
         const buttons = [
             {label:'撤销',icon:'icon-shangyibu',handler:commands.undo},
             {label:'重做',icon:'icon-xiayibu',handler:commands.redo},
+            {label:'导入',icon:'icon-daoru',handler:()=>{
+                // 弹出一个对话框
+                $dialog({
+                    title:'JSON数据导入',
+                    content:'',
+                    footer:true,//是否显示底部确认，取消按钮
+                    onComfirm(text){
+                        commands.update(JSON.parse(text))
+                        // data.value = JSON.parse(text)//刷新后导入无法保留历史记录
+                    },//确认按钮的回调
+                })
+            }},
+            {label:'导出',icon:'icon-daochu1',handler:()=>{
+                // 弹出一个对话框
+                $dialog({
+                    title:'JSON数据导出',
+                    content:JSON.stringify(data.value),
+                    footer:false,//是否显示底部确认，取消按钮
+                })
+            }}
 
         ]
 

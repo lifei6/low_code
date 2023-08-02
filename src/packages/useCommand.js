@@ -4,6 +4,7 @@ import { onUnmounted } from "vue"
 
 // 定义命令和操作的映射关系
 export function useCommand(data) {
+    console.log('useCommand调用了')
     // 维护状态
     const state = {
         // 1.需要前进后退的指针
@@ -14,13 +15,14 @@ export function useCommand(data) {
         destroyArray:[],//销毁列表，存放所有需要的取消订阅的函数
     }
 
+
     // 命令注册函数
     const registry = (command) => {
         // 添加命令
         state.commandArray.push(command)
         // 记录映射
-        state.commands[command.name] = () => {//命令对应的执行函数（对execute包装了一层便于传参）
-            const { mustdo,undo } = command.execute()
+        state.commands[command.name] = (...args) => {//命令对应的执行函数（对execute包装了一层便于传参）
+            const { mustdo,undo } = command.execute(...args)
             mustdo()
 
             // 判断是否需要放队列
@@ -33,8 +35,8 @@ export function useCommand(data) {
                 state.queue.push({mustdo,undo})
                 state.current = state.current+1
 
-                // console.log("state.queue",state.queue)
-                // console.log('current',state.current)
+                console.log("state.queue",state.queue)
+                console.log('current',state.current)
             }
         }
 
@@ -131,6 +133,28 @@ export function useCommand(data) {
             }
         },//执行器
     });
+
+
+    // 4.导入JSON保留历史记录
+    registry({
+        name:'update',
+        pushFlag:true,
+        execute(newData){
+            let state = {
+                before:data.value,
+                after:newData
+            }
+
+            return {
+                mustdo(){
+                    data.value = state.after
+                },
+                undo(){
+                    data.value= state.before
+                }
+            }
+        }
+    })
 
     // 快捷键监听
     const keyboardEvent = (()=>{
