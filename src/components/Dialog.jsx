@@ -1,7 +1,6 @@
 // 对话框
-
 import { ElButton, ElDialog, ElInput } from "element-plus";
-import { createVNode, defineComponent, reactive, ref, render } from "vue";
+import { createVNode, defineComponent, reactive, render } from "vue";
 
 const DialogComponent = defineComponent({
     props: {
@@ -31,8 +30,10 @@ const DialogComponent = defineComponent({
         return () => <ElDialog v-model={state.isShow} title={state.option.title}>
             {
                 // 传入插槽
+                // 默认插槽会显示在中间
+                // 有个footer的具名插槽会显示在底部
                 {
-                    default:()=><ElInput type="textarea" v-model={state.option.content}></ElInput>,
+                    default:()=><ElInput type="textarea" v-model={state.option.content} rows={8}></ElInput>,
                     footer:()=>state.option.footer&&<div>
                         <ElButton onClick={e=>{state.isShow=false}}>取消</ElButton>
                         <ElButton onClick={e=>comfirmHandler()} type="primary">确定</ElButton>
@@ -43,14 +44,14 @@ const DialogComponent = defineComponent({
     }
 })
 
-// 保存dialog虚拟节点
-let vm = null;
 
-export function $dialog(option,data) {
-    // 需要一个对话框组件
-    // 没有才去创建
+
+// 保存dialog虚拟节点，避免多次渲染同一个虚拟节点
+let vm = null;
+export function $dialog(option) {
+    // 需要一个对话框组件，手动挂载到一个容器
+    // 没有缓存的虚拟节点才去创建
     if (!vm) {
-        // 手动挂载到一个容器
         // 1.先创一个DOM容器
         let el = document.createElement('div')
         // 2.创建虚拟节点

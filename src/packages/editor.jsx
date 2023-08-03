@@ -1,18 +1,23 @@
 import { computed, defineComponent, inject, ref } from "vue"
 
+// 引入第三方库
+import deepcopy from "deepcopy"
+import { ElButton } from "element-plus"
+
 // 引入样式
 import './editor.scss'
 
+// 引入子组件
 import EditorBlock from './editor-block'
+import { $dialog } from "@/components/Dialog"
+import { $contextMenu } from "@/components/ContextMenu"
+import { ContextItem } from "@/components/ContextItem"
 
-// 引入自定义功能
+// 引入自定义功能Compostion API
 import { useMenvDragger } from './useMenvDragger'
-import deepcopy from "deepcopy"
 import { useFocus } from "./useFocus"
 import { useBlockDragger } from "./useBlockDragger"
 import { useCommand } from "./useCommand"
-import { $dialog } from "@/components/Dialog"
-import { ElButton } from "element-plus"
 
 
 export default defineComponent({
@@ -21,6 +26,7 @@ export default defineComponent({
     },
     emits: ['update:modelValue'],
     setup(props, ctx) {
+        // 全局响应式数据---------更新data更新整个页面
         const data = computed({
             get: () => {
                 return props.modelValue
@@ -30,24 +36,26 @@ export default defineComponent({
                 ctx.emit('update:modelValue', deepcopy(newVal))
             }
         })
+        // ---------菜单栏字段
         // 加个字段判断是否为预览模式
         let previewRef = ref(false)
         // 加个字段判断是否只留内容区
         let editorRef = ref(true)
 
-        // console.log(data.value)
+        // 获取组件映射配置------------注入组件映射关系
+        const config = inject('config')
 
-        // 计算画布样式
+        // 计算画布样式-----------------容器样式
         const containerStyle = computed(() => ({
             width: data.value.container.width + 'px',
             height: data.value.container.height + 'px',
         }))
 
-        // 获取组件映射配置
-        const config = inject('config')
 
+
+        // -------------------------功能封装
         // 1.菜单拖拽
-        // 获取目标元素
+        // 获取目标元素-------为了判断拖拽元素与目标元素的位置关系：刚进入，在上面移动，出目标元素
         const containerRef = ref(null)
         const { dragstart, dragend } = useMenvDragger(containerRef, data)
 
@@ -62,7 +70,7 @@ export default defineComponent({
 
 
         // 4.菜单按钮
-        // 实现菜单功能
+        // 指令的名称和对应回调的映射
         const { commands } = useCommand(data, focusData)
         const buttons = [
             { label: '撤销', icon: 'icon-shangyibu', handler: commands.undo },
@@ -75,7 +83,7 @@ export default defineComponent({
                         content: '',
                         footer: true,//是否显示底部确认，取消按钮
                         onComfirm(text) {
-                            commands.update(JSON.parse(text))
+                            commands.updateContainer(JSON.parse(text))
                             // data.value = JSON.parse(text)//刷新后导入无法保留历史记录
                         },//确认按钮的回调
                     })
@@ -112,6 +120,45 @@ export default defineComponent({
         ]
 
 
+        //5.实现右击每个代码块出现下拉内容菜单
+        const blockContextmenu = (e, block) => {
+            // 阻止默认的内容菜单弹窗
+            e.preventDefault()
+            console.log('出现内容菜单')
+            $contextMenu({
+                el: e.target,//当前元素的真实DOM，菜单栏相对于点击的组件元素进行挂载
+                context: () => {
+                    return <>
+                        <ContextItem label="删除组件" icon='icon-shanchu' onClick={() => commands.deleteElement()}></ContextItem>
+                        <ContextItem label="置顶组件" icon='icon-top1' onClick={() => commands.top()}></ContextItem>
+                        <ContextItem label="置底组件" icon='icon-bottom' onClick={() => commands.bottom()}></ContextItem>
+                        <ContextItem label="导出组件" icon='icon-daochu1' onClick={() => {
+                            $dialog({
+                                title: '组件导出JSON',
+                                content: JSON.stringify(block),
+                                footer: false,//是否显示底部确认，取消按钮
+                            })
+                        }}></ContextItem>
+                        <ContextItem label="导入组件" icon='icon-daoru' onClick={() => {
+                            $dialog({
+                                title: '组件导入JSON',
+                                content: '',
+                                footer: true,//是否显示底部确认，取消按钮
+                                // 确认按钮的回调
+                                onComfirm:(text)=>{
+                                    // 更新代码块传入旧代码块和新代码块
+                                    commands.updateBlock(block,JSON.parse(text))
+                                }
+                            })
+                        }}></ContextItem>
+                    </>
+                },
+            })
+
+        }
+
+
+        // 预览和编辑模式渲染的DOM
         return () => editorRef.value ? (
             <div class="editor">
                 <div class="editor-left">
@@ -159,6 +206,9 @@ export default defineComponent({
                                         class={[block.focus ? 'editor-block-focus' : '', previewRef.value ? 'editor-block-preview' : '']}
                                         block={block}
                                         onMousedown={e => blockMousedown(e, block, index)}
+                                        // 元素右击菜单事件
+                                        onContextmenu={e => blockContextmenu(e, block)}
+
                                     >
                                     </EditorBlock>
                                 ))
@@ -189,7 +239,7 @@ export default defineComponent({
                         ))
                     }
                 </div>
-                <ElButton type="primary" onClick={e=> editorRef.value = true}>点击返回编辑</ElButton>
+                <ElButton type="primary" onClick={e => editorRef.value = true}>点击返回编辑</ElButton>
             </div>
         )
 

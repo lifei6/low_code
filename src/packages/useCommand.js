@@ -137,9 +137,9 @@ export function useCommand(data, focusData) {
     });
 
 
-    // 4.导入JSON保留历史记录
+    // 4.1导入JSON保留历史记录（更新整个data）
     registry({
-        name: 'update',
+        name: 'updateContainer',
         pushFlag: true,
         execute(newData) {
             let state = {
@@ -153,6 +153,36 @@ export function useCommand(data, focusData) {
                 },
                 undo() {
                     data.value = state.before
+                }
+            }
+        }
+    })
+
+    //  4.2下拉菜单导入组件代码块JSON（更新block）
+    registry({
+        name:'updateBlock',
+        pushFlag:true,
+        execute(oddBlock,newBlock){
+            let state ={
+                before:deepcopy(data.value.blocks),
+                after:(()=>{
+                    // 1.找到旧代码块的位置索引
+                    let blockIndex = data.value.blocks.indexOf(oddBlock)
+                    console.log("blockIndex",blockIndex)
+                    // 2.如果找到（肯定有）
+                    if(blockIndex>-1){
+                        data.value.blocks.splice(blockIndex,1,newBlock) 
+                    }               
+                    return data.value.blocks
+                })()
+            }
+
+            return {
+                mustdo(){
+                    data.value = {...data.value,blocks:state.after}
+                },
+                undo(){
+                    data.value = {...data.value,blocks:state.before}
                 }
             }
         }

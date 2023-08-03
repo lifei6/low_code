@@ -5,7 +5,7 @@ export default defineComponent({
         block: Object
     },
     setup(props) {
-        // 计算代码块位置
+        // 1.计算代码块位置-----------------样式
         const blockStyle = computed(() => ({
             top: props.block.top + 'px',
             left: props.block.left + 'px',
@@ -13,12 +13,17 @@ export default defineComponent({
         }))
 
 
-        //获取需要渲染的组件
+        // 2.获取需要渲染的组件-------------------组件类型
         const config = inject('config')
-        const component = config.componentMap[props.block.key].render()
+        // 必须写成函数：原因就是key改变后，组件重新更新
+        // 但是component如果是确定了（非函数写法）：页面上该组件的样式会更新（因为是计算属性），而组件的类型不会变（丢失响应式）
+        // 因此需要写成函数，每次更新页面都会重新执行，基于最新的key去获得component
+        const component = ()=>{
+            return config.componentMap[props.block.key].render()
+        }
         // console.log(config)
 
-        //挂载后判断是否需要居中
+        // 3.挂载后判断是否需要居中---------拖拽挂载后居中
         const blockRef = ref(null)
         onMounted(() => {
             let { offsetWidth, offsetHeight } = blockRef.value
@@ -36,7 +41,7 @@ export default defineComponent({
         return () => {
             return (
                 <div class="editor-block" style={blockStyle.value} ref={blockRef}>
-                    {component}
+                    {component()}
                 </div>
             )
         }
