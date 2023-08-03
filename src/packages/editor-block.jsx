@@ -9,6 +9,7 @@ export default defineComponent({
         const blockStyle = computed(() => ({
             top: props.block.top + 'px',
             left: props.block.left + 'px',
+            zIndex:props.block.zIndex,
         }))
 
 

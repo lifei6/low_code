@@ -87,25 +87,31 @@
         }
     }
 
-    .editor-block {
-        position: absolute;
+    // .editor-block {
+    //     position: absolute;
 
-        &::after {
-            content: '';
-            position: absolute;
-            top:0;
-            left:0;
-            right:0;
-            bottom:0;
+    //     &::after {
+    //         content: '';
+    //         position: absolute;
+    //         top:0;
+    //         left:0;
+    //         right:0;
+    //         bottom:0;
             
-        }
-    }
+    //     }
+    // }
 
     .editor-block-focus {
         &::after {
             border: 2px dashed red;
         }
 
+    }
+
+    .editor-block-preview {
+        &::after {
+            display: none;
+        }
     }
 
     .mark-line-x {
@@ -123,6 +129,25 @@
     }
 }
 
+.editor-container-canvas-content {
+    margin: 20px auto;
+    background-color: #bfa;
+    position: relative;
+
+    .editor-block {
+        position: absolute;
+
+        &::after {
+            content: '';
+            position: absolute;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            
+        }
+    }
+}
 
 
 .editor-top {
@@ -146,11 +171,14 @@
         cursor: pointer;
         color: rgba(255, 255, 255,0.8);
         > .iconfont {
-            font-size: 40px;
+            font-size: 25px;
             color: rgba(255, 255, 255,0.8);
         }
-        .icon-daoru,.icon-daochu1 {
-            font-size: 35px;
+        // .icon-daoru,.icon-daochu1 {
+        //     font-size: 25px;
+        // }
+        > .btn-label {
+            padding-top: 3px;
         }
     }
 }

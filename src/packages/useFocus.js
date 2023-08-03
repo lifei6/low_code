@@ -1,5 +1,5 @@
 import {computed,ref} from 'vue'
-export function useFocus(data,callback){
+export function useFocus(data,previewRef,callback){
     // 记录最后点击的组件索引
     const selectIndex = ref(-1)//-1表示没有选中
     // 记录最后点击元素
@@ -28,6 +28,8 @@ export function useFocus(data,callback){
     })
 
     const blockMousedown = (e,block,index)=>{
+        // 预览模式直接退出
+        if(previewRef.value)return
         //阻止默认行为和事件冒泡
         e.preventDefault()
         e.stopPropagation()

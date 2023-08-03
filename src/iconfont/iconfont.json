@@ -6,6 +6,69 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "386286",
+      "name": "预览",
+      "font_class": "yulan",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "8035918",
+      "name": "关闭",
+      "font_class": "guanbi",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "8341103",
+      "name": "top",
+      "font_class": "top",
+      "unicode": "e6e7",
+      "unicode_decimal": 59111
+    },
+    {
+      "icon_id": "8592728",
+      "name": "bottom",
+      "font_class": "bottom",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "8592729",
+      "name": "top",
+      "font_class": "top1",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "9243009",
+      "name": "bottom",
+      "font_class": "bottom1",
+      "unicode": "e8a6",
+      "unicode_decimal": 59558
+    },
+    {
+      "icon_id": "15726983",
+      "name": "预览",
+      "font_class": "yulan1",
+      "unicode": "e65b",
+      "unicode_decimal": 58971
+    },
+    {
+      "icon_id": "15765344",
+      "name": "关  闭",
+      "font_class": "guanbi1",
+      "unicode": "e695",
+      "unicode_decimal": 59029
+    },
+    {
+      "icon_id": "32731475",
+      "name": "删除",
+      "font_class": "shanchu",
+      "unicode": "e74a",
+      "unicode_decimal": 59210
+    },
+    {
       "icon_id": "6512676",
       "name": "导入",
       "font_class": "daoru1",
