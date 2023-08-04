@@ -9,6 +9,7 @@ import './editor.scss'
 
 // 引入子组件
 import EditorBlock from './editor-block'
+import EditorOperator from './editor-operator'
 import { $dialog } from "@/components/Dialog"
 import { $contextMenu } from "@/components/ContextMenu"
 import { ContextItem } from "@/components/ContextItem"
@@ -50,6 +51,7 @@ export default defineComponent({
             width: data.value.container.width + 'px',
             height: data.value.container.height + 'px',
         }))
+
 
 
 
@@ -158,6 +160,14 @@ export default defineComponent({
         }
 
 
+        // 6.编辑属性 应用属性
+        const updateContainerProps = (newProps)=>{
+            commands.updateContainer({...data.value,"container":newProps})
+        }
+        const updateBlockProps = (newProps)=>{
+            commands.updateBlock(lastSelectBlock.value,{...lastSelectBlock.value,"props":newProps})
+        }
+
         // 预览和编辑模式渲染的DOM
         return () => editorRef.value ? (
             <div class="editor">
@@ -189,7 +199,14 @@ export default defineComponent({
                         })
                     }
                 </div>
-                <div class="editor-right">右侧</div>
+                <div class="editor-right">
+                    <EditorOperator 
+                     block={lastSelectBlock.value} 
+                     data={data.value}
+                     updateContainerProps = {updateContainerProps}
+                     updateBlockProps = {updateBlockProps}
+                    ></EditorOperator>
+                </div>
                 <div class="editor-container">
                     {/* 产生滚动条 */}
                     <div class="editor-container-canvas">

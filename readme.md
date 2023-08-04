@@ -12,12 +12,58 @@
 
 ## 1.整体框架
 
-分为四个区：
+### 分为四个区：
 
 - 左侧物料区
 - 顶部菜单栏
 - 右侧属性控制栏目
 - 中间的渲染区
+
+### 初始JSON数据结构
+
+```json
+{
+    "container":{
+        "width":550,
+        "height":550
+    },
+    "blocks":[
+        {"top":100,"left":100,"zIndex":1,"key":"text"},
+        {"top":200,"left":200,"zIndex":1,"key":"button"},
+        {"top":300,"left":300,"zIndex":1,"key":"input"}
+    ]
+}
+```
+
+
+
+### 注册菜单栏组件componet的数据结构
+
+```js	
+component:{
+    name:'输入框',//组件名
+    key:'input',//标签名
+    preview:()=><CustomComponent/>,//预览组件
+    render:()=><CustomComponent/>,//渲染组件
+    props:{
+        
+    },//属性
+}
+```
+
+属性props的数据结构：
+
+```js
+props:{
+    text:
+    color:
+    size:
+}
+```
+
+
+
+### 注册命令的数据结构command
 
 
 

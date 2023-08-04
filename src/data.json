@@ -1,11 +1,39 @@
 {
-    "container":{
-        "width":550,
-        "height":550
+    "container": {
+        "width": 550,
+        "height": 550
     },
-    "blocks":[
-        {"top":100,"left":100,"zIndex":1,"key":"text"},
-        {"top":200,"left":200,"zIndex":1,"key":"button"},
-        {"top":300,"left":300,"zIndex":1,"key":"input"}
+    "blocks": [
+        {
+            "top": 100,
+            "left": 100,
+            "zIndex": 1,
+            "key": "text",
+            "props": {
+                "text":"李飞学低代码",
+                "color":"#ff0000",
+                "fontSize":"14px"
+            }
+        },
+        {
+            "top": 200,
+            "left": 200,
+            "zIndex": 1,
+            "key": "button",
+            "props": {
+                "text":"点一下按钮",
+                "type":"primary",
+                "size":"small"
+            }
+        },
+        {
+            "top": 300,
+            "left": 300,
+            "zIndex": 1,
+            "key": "input",
+            "props":{
+
+            }
+        }
     ]
 }

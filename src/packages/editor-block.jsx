@@ -18,10 +18,11 @@ export default defineComponent({
         // 必须写成函数：原因就是key改变后，组件重新更新
         // 但是component如果是确定了（非函数写法）：页面上该组件的样式会更新（因为是计算属性），而组件的类型不会变（丢失响应式）
         // 因此需要写成函数，每次更新页面都会重新执行，基于最新的key去获得component
-        const component = ()=>{
-            return config.componentMap[props.block.key].render()
-        }
-        // console.log(config)
+        //!!!还有一种写法就是写渲染函数里面即reture ()=>{ component =  config.componentMap[props.block.key].render() return <div></div>}
+        // 方式1
+        // const component = ()=>{
+        //     return config.componentMap[props.block.key].render()
+        // }
 
         // 3.挂载后判断是否需要居中---------拖拽挂载后居中
         const blockRef = ref(null)
@@ -38,10 +39,16 @@ export default defineComponent({
             props.block.height = offsetHeight
 
         })
+
+        // console.log(props.block.props)
         return () => {
+            // 方式2
+            let component =  config.componentMap[props.block.key].render({
+                props:props.block.props
+            })
             return (
                 <div class="editor-block" style={blockStyle.value} ref={blockRef}>
-                    {component()}
+                    {component}
                 </div>
             )
         }
