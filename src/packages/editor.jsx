@@ -23,7 +23,8 @@ import { useCommand } from "./useCommand"
 
 export default defineComponent({
     props: {
-        modelValue: { type: Object }
+        modelValue: { type: Object },
+        formData:{type:Object}
     },
     emits: ['update:modelValue'],
     setup(props, ctx) {
@@ -165,7 +166,10 @@ export default defineComponent({
             commands.updateContainer({...data.value,"container":newProps})
         }
         const updateBlockProps = (newProps)=>{
-            commands.updateBlock(lastSelectBlock.value,{...lastSelectBlock.value,"props":newProps})
+            // newProps = newblock
+
+            // console.log(newProps)
+            commands.updateBlock(lastSelectBlock.value,newProps)
         }
 
         // 预览和编辑模式渲染的DOM
@@ -225,7 +229,7 @@ export default defineComponent({
                                         onMousedown={e => blockMousedown(e, block, index)}
                                         // 元素右击菜单事件
                                         onContextmenu={e => blockContextmenu(e, block)}
-
+                                        formData={props.formData}
                                     >
                                     </EditorBlock>
                                 ))
@@ -251,12 +255,14 @@ export default defineComponent({
                             <EditorBlock
                                 class={'editor-block-preview'}
                                 block={block}
+                                formData={props.formData}
                             >
                             </EditorBlock>
                         ))
                     }
                 </div>
                 <ElButton type="primary" onClick={e => editorRef.value = true}>点击返回编辑</ElButton>
+                {JSON.stringify(props.formData)}
             </div>
         )
 

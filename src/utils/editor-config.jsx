@@ -1,6 +1,7 @@
 // json数据的key和物料区组件和实例组件的映射关系
 // {preview:,render:,key:}
 
+import { Range } from "@/components/Range";
 import { ElButton, ElInput } from "element-plus";
 
 function createEditorConfig(){
@@ -27,6 +28,8 @@ export let registerConfig =  createEditorConfig();
 const createInputProp = (label)=>({type:'input',label})
 const createColorProp = (label)=>({type:'color',label})
 const createSelcetProp = (label,options)=>({type:'select',label,options})
+
+// 文本框
 registerConfig.register({
     label:'文本',
     key:'text',
@@ -44,6 +47,7 @@ registerConfig.register({
     },
 })
 
+// 按钮
 registerConfig.register({
     label:'按钮',
     key:'button',
@@ -70,12 +74,41 @@ registerConfig.register({
     },
 })
 
+
+// 输入框
 registerConfig.register({
     label:'输入框',
     key:'input',
     preview:()=><ElInput placeholder="预览按钮" />,
-    render:({props})=><ElInput placeholder={props.text||"渲染按钮"} />,
+    render:({props,model})=>{ 
+        // console.log("model",model)
+                                                            //modelValue:输入值 "onUpdate:modelValue":更新函数
+        return <ElInput  placeholder={props.text||"渲染按钮"} {...model.default}/>
+    },
     props:{
 
+    },
+    model:{//输入框才有的双向绑定字段
+        default:"绑定字段",
+    }
+})
+
+// 范围框
+registerConfig.register({
+    label:'范围框',
+    key:'range',
+    preview:()=><Range></Range>,
+    render:({props,model})=>{
+        // console.log("model",model)
+       return <Range {...{
+        start:model.start.modelValue,
+        end:model.end.modelValue,
+        "onUpdate:start":model.start["onUpdate:modelValue"],
+        "onUpdate:end":model.end["onUpdate:modelValue"]
+       }}></Range>
+    },
+    model:{
+        start:'开始范围字段',
+        end:'结束范围字段'
     }
 })

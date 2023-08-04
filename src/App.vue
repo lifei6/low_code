@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <Editor v-model="state"></Editor>
+    <Editor v-model="state" :formData="formData"></Editor>
   </div>
 </template>
 
@@ -24,8 +24,22 @@ export default {
     let state = ref(data)
     // console.log(registerConfig)
     provide('config',registerConfig)
+
+    // 造一些假的输入框数据
+    const formData = ref({
+      username:'baomaoxianren',
+      password:"faaf23afaf",
+      start:0,
+      end:100,
+    })
+
+    //范围数据
+    // const rangeDate = ref({
+    //   start:
+    // })
     return {
-      state
+      state,
+      formData,
     }
   }
 }

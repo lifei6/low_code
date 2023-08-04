@@ -18,7 +18,7 @@ export const useMenvDragger = function(containerRef,data){
             e.dataTransfer.dropEffect = "none"
         }
         const drop = (e) => {
-            const block = { key: currentComponent.key, top: e.offsetY, left: e.offsetX, zIndex: 1, alignCenter: true,props:{} }
+            const block = { key: currentComponent.key, top: e.offsetY, left: e.offsetX, zIndex: 1, alignCenter: true,props:{},model:{} }
             data.value.blocks.push(block)
             currentComponent=null
         }

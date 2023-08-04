@@ -21,8 +21,7 @@ export default defineComponent({
             if(!props.block){//没有选中的元素，绑定容器的宽高
                 state.editData = deepcopy(props.data.container)
             }else{//选中显示元素信息
-                state.editData = deepcopy(props.block.props)
-                console.log(state)
+                state.editData = deepcopy(props.block)
             }
         }
 
@@ -57,13 +56,14 @@ export default defineComponent({
             }else{
                 // 有元素显示相应的表单
                 let component = config.componentMap[block.key]
+                // 根据属性渲染
                 if(component&&component.props){  //{text:{type:,label}}
                     content =  Object.entries(component.props).map(([propName,propConfig])=>{
                         return <ElFormItem label={propConfig.label}>
                             {{
-                                input:()=><ElInput v-model={state.editData.text}></ElInput>, //输入框情况
-                                color:()=><ElColorPicker v-model={state.editData.color}></ElColorPicker>,//颜色选择器
-                                select:()=><ElSelect v-model={state.editData[propName]}>
+                                input:()=><ElInput v-model={state.editData.props[propName]}></ElInput>, //输入框情况
+                                color:()=><ElColorPicker v-model={state.editData.props[propName]}></ElColorPicker>,//颜色选择器
+                                select:()=><ElSelect v-model={state.editData.props[propName]}>
                                     {
                                         propConfig.options.map(opt=>{
                                             return <ElOption label={opt.label} value={opt.value}></ElOption>
@@ -74,6 +74,15 @@ export default defineComponent({
 
                         </ElFormItem>
                     })  
+                }
+                //根据model渲染
+                if(component&&component.model){
+                    content.push(Object.entries(component.model).map(([modelName,label])=>{
+                        return <ElFormItem label={label}>
+                            {/* model=>{default:输入值例如username} */}
+                            <ElInput v-model={state.editData.model[modelName]}></ElInput>
+                        </ElFormItem>
+                    }))
                 }
             }
             return (

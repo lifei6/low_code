@@ -33,6 +33,21 @@
             "key": "input",
             "props":{
 
+            },
+            "model":{
+                
+            }
+        },
+        {
+            "top":400,
+            "left":300,
+            "zIndex":1,
+            "key":"range",
+            "props":{
+
+            },
+            "model":{
+                
             }
         }
     ]
