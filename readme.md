@@ -185,18 +185,81 @@ props:{
 - 维护一个字段判断是否退出
 - 退出就进入只有内容区的页面
 
-## 15.实现右侧属性栏与注册组件的props对应
+## 15.实现右侧属性栏渲染内容与注册组件的props、model对应
 
-- 根据props渲染对应的组件
+- container渲染
+- props渲染
+- model渲染
 
-## 16.实现渲染组件的属性初始化（使用data中的props）
+## 16.实现内容区渲染组件的属性初始化（使用data中的props）
+
+   data=>渲染页面
 
 - 将参数传递给render函数进行绑定即可
 
 ## 17.实现右侧属性操作栏与内容区的同步
 
-- 对于文本和按钮只需呀将右侧属性栏数据通过父组件editor修改对应的block即可重新渲染内容区组件，使属性更新
-- 
+右侧属性栏维护editorData这个状态：记录当前右侧显示的是容器的属性，还是组件的属性
+
+   兄弟组件通信方式：右侧属性栏=====通过父组件editor===>渲染内容区   
+
+- 如果是**容器**则在点击应用按钮后调用 父组件editor 传过来的方法（updateContainerProps）将我们的新的editorData={container：{width,height}}抛出去，父组件方法（updateContainerProps）接收到这个新的容器属性，会使用注册的**updateContainer指令（会有历史记录）**去更新data，重新渲染页面
+- 如果是**组件**则在点击应用按钮后调用 父组件editor 传过来的方法(updateBlockProps)将我们的新的editorData= deepcop(block)={props,model,key,top,....}抛出去，父组件方法(updateBlockProps)接收到这个新的组件属性，会使用注册的**updateBlock指令（会有历史记录）**去更新data，重新渲染页面
+
+### 1.文本和按钮
+
+- 使用上面的单向通信即可
+
+
+### 2.输入框和范围框
+
+- 需要实现双向绑定：表单收集容器formData = {}与组件内input框的双向绑定，formData = {}里面的属性则由右侧菜单栏绑定字段
+
+  1. 右侧属性栏可以绑定字段（就是最后表单数据的属性名称）              
+
+     - 输入框：editorData={model:{default:'绑定的字段'}}
+     - 范围框：editorData={model:{start:'绑定的字段',end:'绑定的字段'}}
+
+  2. 通过上述方法抛出绑定字段后的组件到父组件editor，父组件props通知内容区的组件（ElInput/Range）的v-model={我们绑定的字段} （理论上这样就行了）
+
+  3. 但是我们可能需要给每个组件绑定多个响应式的属性，如范围框的start和end，而jsx的写法v-model只能默认展开为{modelValue:我们绑定的字段  onUpdate:modelValue = v=>我们绑定的字段=v}，**缺点：**
+
+     - 需要组件内部去实现接收modelValue还有当值修改后触发update:modelValue，我们可能不想要这个名字（组件实现的话无法改名）
+     - 当有多个属性是双向绑定的时候，我们v-model无能为力（无法绑定多个不同名属性）
+
+  4. ```js
+     //组件渲染前：调用注册的render（）函数前
+     //所以我们在进行属性绑定前，需要将属性
+     model={start:'绑定的字段1',end:'绑定的字段2'}
+      //==映射====>
+     model= {
+         start:{
+               modelValue:'绑定的字段1',
+               "onUpdate:modelValue":'输入框的newValue'=>表单数据容器['绑定的字段1']=newvalue}
+     		},
+         end:{
+               modelValue:'绑定的字段2',
+               "onUpdate:modelValue":'输入框的newValue'=>表单数据容器['绑定的字段2']=newvalue}
+         }
+     ```
+
+  5. 上面就是实际的解决办法：
+
+     ```js
+     //绑定时：调用注册的render()函数时
+     //Range组件内部已经声明实现了start,end,"update:start","update:end"属性和方法
+         render:({props,model})=>{
+            return <Range {...{
+             start:model.start.modelValue,
+             end:model.end.modelValue,
+             "onUpdate:start":model.start["onUpdate:modelValue"],
+             "onUpdate:end":model.end["onUpdate:modelValue"]
+            }}></Range>
+     ```
+
+     
+
+### 3.下拉框
 
 
 

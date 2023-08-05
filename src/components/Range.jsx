@@ -13,7 +13,7 @@ export const Range = defineComponent({
                 return props.start
             },
             set:(newValue)=>{
-                ctx.emit('update:start',newValue)
+                ctx.emit('update:start',Number(newValue))
             }
         })
 
@@ -22,7 +22,7 @@ export const Range = defineComponent({
                 return props.end
             },
             set:(newValue)=>{
-                ctx.emit('update:end',newValue)
+                ctx.emit('update:end',Number(newValue))
             }
         })
 

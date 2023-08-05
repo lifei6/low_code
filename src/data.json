@@ -16,8 +16,8 @@
             }
         },
         {
-            "top": 200,
-            "left": 200,
+            "top": 100,
+            "left": 300,
             "zIndex": 1,
             "key": "button",
             "props": {
@@ -27,10 +27,22 @@
             }
         },
         {
-            "top": 300,
-            "left": 300,
+            "top": 200,
+            "left": 50,
             "zIndex": 1,
             "key": "input",
+            "props":{
+        
+            },
+            "model":{
+                
+            }
+        },
+        {
+            "top":200,
+            "left":300,
+            "zIndex":1,
+            "key":"range",
             "props":{
 
             },
@@ -39,12 +51,12 @@
             }
         },
         {
-            "top":400,
+            "top":300,
             "left":300,
             "zIndex":1,
-            "key":"range",
+            "key":"select",
             "props":{
-
+                "options":[{"label":"a","value":1}]
             },
             "model":{
                 

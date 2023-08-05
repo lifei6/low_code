@@ -106,10 +106,13 @@ export default defineComponent({
             { label: '置底', icon: 'icon-bottom', handler: commands.bottom },
             { label: '删除', icon: 'icon-shanchu', handler: commands.deleteElement },
             {
-                label: () => previewRef.value ? '预览' : '编辑', icon: 'icon-yulan', handler: () => {
+                label: () => previewRef.value ? '编辑' : '预览', icon: 'icon-yulan', handler: () => {
                     // 点击能切换预览模式
                     previewRef.value = !previewRef.value
-                    clearAllFocus()
+                    console.log('最后一个选中元素',lastSelectBlock.value.key)
+                    // TODO:这里需要优化,清楚所有选中，右边属性栏直接为容器内容
+                    // 需要的效果是点击编辑之前选中的是哪个元素，编辑后选中的仍是
+                    // clearAllFocus() 
                     // 如果当前是预览模式则去除遮罩
                 }
             },
@@ -167,8 +170,6 @@ export default defineComponent({
         }
         const updateBlockProps = (newProps)=>{
             // newProps = newblock
-
-            // console.log(newProps)
             commands.updateBlock(lastSelectBlock.value,newProps)
         }
 
@@ -219,7 +220,7 @@ export default defineComponent({
                             class="editor-container-canvas-content"
                             style={containerStyle.value}
                             ref={containerRef}
-                            onMousedown={e => clearAllFocus()}
+                            onMousedown={e =>{if(previewRef.value)return; clearAllFocus(e)}}
                         >
                             {
                                 data.value.blocks.map((block, index) => (

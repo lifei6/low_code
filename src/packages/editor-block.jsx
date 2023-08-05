@@ -44,22 +44,24 @@ export default defineComponent({
         // console.log(props.block.props)
         return () => {
             // 方式2
-            let option = { props: props.block.props }
+
             const component = config.componentMap[props.block.key]
-            // props.block.model = {default：输入的字段例如username}
-                                                                    //({},default)
-            option.model = Object.keys(component.model || {}).reduce((prev, modelName) => {
-                let propName = props.block.model[modelName]  //输入的字段例如username
-                // console.log("propName",propName)
-                prev[modelName] = {          // {default:{modelValue:lifei,"onUpdate:modelValue":huxuan=>lifei=huxuan}}
-                    modelValue: props.formData[propName],
-                    "onUpdate:modelValue": v => {
-                        // console.log('值更新执行了',v)
-                        props.formData[propName] = v //如果是属性操作区绑定新输入字段则会添加一个属性到formData，渲染区输入框的值会给这个属性
+            // props.block.model = {default：输入的字段例如username}      
+            let option = {
+                props: props.block.props,
+                model: Object.keys(component.model || {}).reduce((prev, modelName) => {
+                    let propName = props.block.model[modelName]  //输入的字段例如username
+                    // console.log("propName",propName)
+                    prev[modelName] = {          // {default:{modelValue:lifei,"onUpdate:modelValue":huxuan=>lifei=huxuan}}
+                        modelValue: props.formData[propName],
+                        "onUpdate:modelValue": v => {
+                            // console.log('值更新执行了',v)
+                            props.formData[propName] = v //如果是属性操作区绑定新输入字段则会添加一个属性到formData，渲染区输入框的值会给这个属性
+                        }
                     }
-                } 
-                return prev
-            }, {})
+                    return prev
+                }, {})
+            }
             const RenderComponent = component.render(option)
             return (
                 <div class="editor-block" style={blockStyle.value} ref={blockRef}>
