@@ -1,3 +1,19 @@
+// 整个编辑区页面：包含四区
+// 一个组件注册中心
+// 1.预览区：核心是预览组件，或者说是组件封装 以及组件拖拽
+// 2.菜单栏：核心是一个指令注册系统，用来保留具有历史记录的操作
+// 3.渲染区：
+//        - 封装组件的渲染
+//        - 组件的聚焦
+//        - 组件的拖拽
+//        - 拖拽的辅助线和快速贴近
+//        - 右击下拉菜单栏
+//        - 能与data形成双绑
+//        - 组件的大小拖拽
+// 4.属性操作区：能根据组件注册时的prop和model渲染对应的视图，能与block实现双向绑定
+
+
+
 import { computed, defineComponent, inject, ref } from "vue"
 
 // 引入第三方库
@@ -28,7 +44,7 @@ export default defineComponent({
     },
     emits: ['update:modelValue'],
     setup(props, ctx) {
-        // 全局响应式数据---------更新data更新整个页面
+        // 全局响应式数据--------------更新data==更新整个页面
         const data = computed({
             get: () => {
                 return props.modelValue
@@ -56,12 +72,13 @@ export default defineComponent({
 
 
 
-        // -------------------------功能封装
-        // 1.菜单拖拽
+        // ----------------------------------------功能封装-------------------------------
+        // 1.菜单（物料区的组件菜单）拖拽
         // 获取目标元素-------为了判断拖拽元素与目标元素的位置关系：刚进入，在上面移动，出目标元素
         const containerRef = ref(null)
         const { dragstart, dragend } = useMenvDragger(containerRef, data)
 
+        
         // 2.获取焦点,选中后就可能进行拖拽
         let { blockMousedown, clearAllFocus, focusData, lastSelectBlock } = useFocus(data, previewRef, (e) => {
             mousedown(e)
@@ -109,7 +126,7 @@ export default defineComponent({
                 label: () => previewRef.value ? '编辑' : '预览', icon: 'icon-yulan', handler: () => {
                     // 点击能切换预览模式
                     previewRef.value = !previewRef.value
-                    console.log('最后一个选中元素',lastSelectBlock.value.key)
+                    // console.log('最后一个选中元素',lastSelectBlock.value.key)
                     // TODO:这里需要优化,清楚所有选中，右边属性栏直接为容器内容
                     // 需要的效果是点击编辑之前选中的是哪个元素，编辑后选中的仍是
                     // clearAllFocus() 

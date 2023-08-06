@@ -10,7 +10,7 @@
             "zIndex": 1,
             "key": "text",
             "props": {
-                "text":"李飞学低代码",
+                "text":"小猫低代码",
                 "color":"#ff0000",
                 "fontSize":"14px"
             }
@@ -21,7 +21,7 @@
             "zIndex": 1,
             "key": "button",
             "props": {
-                "text":"点一下按钮",
+                "text":"点俺一下斯斯",
                 "type":"primary",
                 "size":"small"
             }

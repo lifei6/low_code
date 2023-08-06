@@ -1,7 +1,8 @@
 import { createApp } from 'vue'
-import App from './App.vue'
 // 引入样式
 import 'element-plus/dist/index.css'
+import App from './App.vue'
+
 
 
 // 解决elemnet-plus中使用el-table的ResizeObserver loop limit exceeded问题

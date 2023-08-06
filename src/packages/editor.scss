@@ -227,3 +227,63 @@
         min-height: 25px;
     }
 }
+
+
+// 拖拽点的样式
+.dot {
+    height: 8px;
+    width: 8px;
+    box-sizing: border-box;
+    background-color: black;
+    z-index: 9999;
+    // border-radius: 50%;
+    position: absolute;
+    user-select: none;
+}
+
+
+// 中间四个点
+.center-start {
+    top:-3px;
+    left:calc(50% - 4px);
+}
+
+.center-end {
+    bottom:-3px;
+    left:calc(50% - 4px);
+}
+
+.start-center {
+    top:calc(50% - 4px);
+    left:-3px;
+}
+.end-center {
+    top:calc(50% - 4px);
+    right:-3px;
+}
+
+// 四个角的点
+.start-start {
+    top:-3px;
+    left:-3px;
+}
+
+.end-start {
+    top:-3px;
+    right:-3px;
+}
+
+.start-end {
+    bottom:-3px;
+    left:-3px;
+}
+
+.end-end {
+    bottom:-3px;
+    right:-3px;
+}
+
+// 关闭动画
+.el-button,.el-input {
+    transition: none;
+}

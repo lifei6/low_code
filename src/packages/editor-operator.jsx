@@ -23,7 +23,6 @@ export default defineComponent({
             if (!props.block) {//没有选中的元素，绑定容器的宽高
                 state.editData = deepcopy(props.data.container)
             } else {//选中显示元素信息
-                console.log('我有block')
                 state.editData = deepcopy(props.block)
             }
         }

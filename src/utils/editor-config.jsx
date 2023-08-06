@@ -1,5 +1,5 @@
-// json数据的key和物料区组件和实例组件的映射关系
-// {preview:,render:,key:}
+// json数据的key和  物料区组件 和 实例组件 以及 属性操作栏预设属性配置框 的映射关系
+// key====>{preview:,render:,key:,props:,model:}
 
 import { Range } from "@/components/Range";
 import { ElButton, ElInput, ElOption, ElSelect } from "element-plus";
@@ -10,7 +10,7 @@ function createEditorConfig() {
     // 映射列表
     const componentMap = {}
 
-    // 放回一个注册方法和注册了的组件列表
+    // 返回一个 注册组件的方法 和 注册了的组件列表 和 映射关系表
     return {
         componentList,
         componentMap,
@@ -29,39 +29,18 @@ const createInputProp = (label) => ({ type: 'input', label })
 const createColorProp = (label) => ({ type: 'color', label })
 const createSelcetProp = (label, options) => ({ type: 'select', label, options })
 const createTableProp = (label, table) => ({ type: 'table', label, table })
-//下拉框
-registerConfig.register({
-    label: '下拉框',
-    key: 'select',
-    preview: () => <ElSelect></ElSelect>,
-    render: ({ props,model }) => (<ElSelect {...model.default}>
-        {
-            (props.options || []).map((opt, idx) => {
-                return <ElOption label={opt.label} value={opt.value} key={idx}></ElOption>
-            })
-        }
-    </ElSelect>),
-    props: {//table=[{label:a,value:1},{label:b,value2}...]
-        options: createTableProp('下拉选项', {
-            options: [
-                { label: '显示值', field: "label" }, //一列
-                { label: '绑定值', field: "value" }, //一列
-            ],
-            tag: "label",//显示给用户的值是属性值label，还是实际值value
-        }),
-    },
-    model:{
-        default:"绑定字段",//选择框选择的值
-    }
-})
 
 
-// 文本框
+// 1.文本框
 registerConfig.register({
     label: '文本',
     key: 'text',
+    resize:{
+        width:true,
+        height:true
+    },
     preview: () => '预览文本',
-    render: ({ props }) => <span style={{ color: props.color, fontSize: props.fontSize }}>{props.text || '渲染文本'}</span>,
+    render: ({ size,props }) => <div style={{...size, color: props.color, fontSize: props.fontSize,display:"flex",justifyContent:"center",alignItems:"center" }}>{props.text || '渲染文本'}</div>,
     props: {
         text: createInputProp('文本内容'),
         color: createColorProp('字体颜色'),
@@ -74,12 +53,16 @@ registerConfig.register({
     },
 })
 
-// 按钮
+// 2.按钮
 registerConfig.register({
     label: '按钮',
     key: 'button',
+    resize:{
+        width:true,
+        height:true,
+    },
     preview: () => <ElButton>预览按钮</ElButton>,
-    render: ({ props }) => <ElButton type={props.type} size={props.size}>{props.text || "渲染按钮"}</ElButton>,
+    render: ({ size,props }) => <ElButton style={{width:size.width,height:size.height}} type={props.type} size={props.size}>{props.text || "渲染按钮"}</ElButton>,
     props: {
         text: createInputProp('按钮内容'),
         type: createSelcetProp('按钮类型', [
@@ -102,15 +85,19 @@ registerConfig.register({
 })
 
 
-// 输入框
+// 3.输入框
 registerConfig.register({
     label: '输入框',
     key: 'input',
+    resize:{
+        width:true,
+        height:false,
+    },
     preview: () => <ElInput placeholder="预览输入框" />,
-    render: ({ props, model }) => {
+    render: ({ size,props, model }) => {
         // console.log("model",model)
         //modelValue:输入值 "onUpdate:modelValue":更新函数
-        return <ElInput placeholder={props.text || "渲染输入框"} {...model.default} />
+        return <ElInput style={{width:size.width}} placeholder={props.text || "渲染输入框"} {...model.default} />
     },
     props: {
 
@@ -120,7 +107,7 @@ registerConfig.register({
     }
 })
 
-// 范围框
+// 4.范围框
 registerConfig.register({
     label: '范围框',
     key: 'range',
@@ -137,5 +124,32 @@ registerConfig.register({
     model: {
         start: '开始范围字段',
         end: '结束范围字段'
+    }
+})
+
+
+// 5.下拉框
+registerConfig.register({
+    label: '下拉框',
+    key: 'select',
+    preview: () => <ElSelect></ElSelect>,
+    render: ({ props,model }) => (<ElSelect {...model.default}>
+        {
+            (props.options || []).map((opt, idx) => {
+                return <ElOption label={opt.label} value={opt.value} key={idx}></ElOption>
+            })
+        }
+    </ElSelect>),
+    props: {//table=[{label:a,value:1},{label:b,value2}...]
+        options: createTableProp('下拉选项', {
+            options: [
+                { label: '显示值', field: "label" }, //一列
+                { label: '绑定值', field: "value" }, //一列
+            ],
+            tag: "label",//显示给用户的值是属性值label，还是实际值value
+        }),
+    },
+    model:{
+        default:"绑定字段",//选择框选择的值
     }
 })

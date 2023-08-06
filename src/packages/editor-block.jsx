@@ -1,4 +1,5 @@
 import { inject, computed, defineComponent, onMounted, ref } from "vue";
+import BlockResize from "./block-resize";
 
 export default defineComponent({
     props: {
@@ -44,10 +45,13 @@ export default defineComponent({
         // console.log(props.block.props)
         return () => {
             // 方式2
-
             const component = config.componentMap[props.block.key]
             // props.block.model = {default：输入的字段例如username}      
             let option = {
+                size: props.block.hasResize?{
+                    width: props.block.width+'px',
+                    height: props.block.height+'px',
+                }:{},
                 props: props.block.props,
                 model: Object.keys(component.model || {}).reduce((prev, modelName) => {
                     let propName = props.block.model[modelName]  //输入的字段例如username
@@ -63,9 +67,12 @@ export default defineComponent({
                 }, {})
             }
             const RenderComponent = component.render(option)
+            const { width, height } = component.resize || {}
             return (
                 <div class="editor-block" style={blockStyle.value} ref={blockRef}>
                     {RenderComponent}
+                    {props.block.focus && (width || height)
+                        && <BlockResize resize={component.resize || {}} block={props.block}></BlockResize>}
                 </div>
             )
         }
