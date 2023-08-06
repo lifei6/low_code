@@ -136,7 +136,7 @@
 
     .editor-block {
         position: absolute;
-
+        cursor: pointer;
         &::after {
             content: '';
             position: absolute;

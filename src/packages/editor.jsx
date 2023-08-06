@@ -127,9 +127,7 @@ export default defineComponent({
                     // 点击能切换预览模式
                     previewRef.value = !previewRef.value
                     // console.log('最后一个选中元素',lastSelectBlock.value.key)
-                    // TODO:这里需要优化,清楚所有选中，右边属性栏直接为容器内容
-                    // 需要的效果是点击编辑之前选中的是哪个元素，编辑后选中的仍是
-                    // clearAllFocus() 
+                    clearAllFocus() 
                     // 如果当前是预览模式则去除遮罩
                 }
             },
@@ -190,6 +188,7 @@ export default defineComponent({
             commands.updateBlock(lastSelectBlock.value,newProps)
         }
 
+        // 7.大小拖拽
         // 这里提供出去给修改大小后代触发历史记录(这里是通过索引更新的形式)
         const updateBlockPropsByIndex = (oddBlock,newBlock)=>{
             commands.updateBlock(oddBlock,newBlock,selectIndex.value)
@@ -243,7 +242,7 @@ export default defineComponent({
                             class="editor-container-canvas-content"
                             style={containerStyle.value}
                             ref={containerRef}
-                            onMousedown={e =>{if(previewRef.value)return; clearAllFocus(e)}}
+                            onMousedown={e => clearAllFocus(e)}
                         >
                             {
                                 data.value.blocks.map((block, index) => (
@@ -254,6 +253,8 @@ export default defineComponent({
                                         // 元素右击菜单事件
                                         onContextmenu={e => blockContextmenu(e, block)}
                                         formData={props.formData}
+                                        //预览模式
+                                        preview = {previewRef.value}
                                     >
                                     </EditorBlock>
                                 ))

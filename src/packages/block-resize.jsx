@@ -8,7 +8,6 @@ export default defineComponent({
     props: {
         resize: Object,
         block: Object,
-        // updateBlockPropsByIndex:Function,
     },
     setup(props, ctx) {
         // 注入保存历史记录的方法
@@ -76,6 +75,10 @@ export default defineComponent({
             e.stopPropagation()
             // 记录拖拽前的状态
             oddBlock = deepcopy(props.block)
+            // 去除选中状态
+            oddBlock.focus = false
+
+
             let {clientX,clientY}=e
             // 记录点击状态
             startState = {
@@ -87,7 +90,7 @@ export default defineComponent({
                 startWidth:props.block.width,   
                 direction
             }
-            // 廷加拖拽事件
+            // 添加拖拽事件
             document.addEventListener('mousemove',mousemove)
             document.addEventListener('mouseup',mouseup)
         }

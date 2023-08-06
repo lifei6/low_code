@@ -5,6 +5,7 @@ export default defineComponent({
     props: {
         block: Object,
         formData: Object,
+        preview:Boolean,
     },
     setup(props) {
         // 1.计算代码块位置-----------------样式
@@ -76,7 +77,7 @@ export default defineComponent({
             return (
                 <div class="editor-block" style={blockPosition.value} ref={blockRef}>
                     {RenderComponent}
-                    {props.block.focus && (width || height)
+                    {props.block.focus && !props.preview && (width || height)
                         && <BlockResize resize={component.resize || {}} block={props.block}></BlockResize>}
                 </div>
             )

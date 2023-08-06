@@ -4,9 +4,9 @@ import { onUnmounted } from "vue"
 
 // 定义命令和操作的映射关系
 export function useCommand(data, focusData) {
-    console.log('useCommand调用了')
+    console.log('---------指令初始化--------')
     // 维护状态
-    const state = {
+    const historyState = {
         // 1.需要前进后退的指针
         current: -1,//默认没有
         queue: [],//存放所有操作命令的状态对象{redo:存放新的状态，undo:存放之前的状态}
@@ -19,30 +19,30 @@ export function useCommand(data, focusData) {
     // 命令注册函数
     const registry = (command) => {
         // 添加命令
-        state.commandArray.push(command)
+        historyState.commandArray.push(command)
         // 记录映射
-        state.commands[command.name] = (...args) => {//命令对应的执行函数（对execute包装了一层便于传参）
+        historyState.commands[command.name] = (...args) => {//命令对应的执行函数（对execute包装了一层便于传参）
             const { mustdo, undo } = command.execute(...args)
             mustdo()
 
             // 判断是否需要放队列
             if (command.pushFlag) {
                 // 判断队列之前是否有元素了，可能中间撤销了几次，需要基于最新（撤销后的索引去存放元素）
-                if (state.queue.length > 0) {
-                    state.queue = state.queue.slice(0, state.current + 1)
+                if (historyState.queue.length > 0) {
+                    historyState.queue = historyState.queue.slice(0, historyState.current + 1)
                 }
 
-                state.queue.push({ mustdo, undo })
-                state.current = state.current + 1
+                historyState.queue.push({ mustdo, undo })
+                historyState.current = historyState.current + 1
 
-                console.log("历史队列", state.queue)
-                console.log('当前队列索引', state.current)
+                console.log("历史队列", historyState.queue)
+                console.log('当前队列索引', historyState.current)
             }
         }
 
     }
 
-
+    console.log('指令注册开始')
     // 注册一些命令
     //1.前进(重做)
     registry({
@@ -53,10 +53,10 @@ export function useCommand(data, focusData) {
                 // 所有命令都会执行mustdo方法
                 mustdo() {
                     // console.log('重做') 
-                    let item = state.queue[state.current + 1]
+                    let item = historyState.queue[historyState.current + 1]
                     if (item) {
                         item.mustdo && item.mustdo()
-                        state.current++
+                        historyState.current++
                     }
                 }
             }
@@ -73,11 +73,11 @@ export function useCommand(data, focusData) {
                 // 所有命令都会执行redo方法
                 mustdo() {
                     // console.log('撤销')
-                    if (state.current > -1) {
-                        let item = state.queue[state.current]
+                    if (historyState.current > -1) {
+                        let item = historyState.queue[historyState.current]
                         if (item) {
                             item.undo && item.undo()
-                            state.current--
+                            historyState.current--
                         }
                     }
                 }
@@ -100,7 +100,7 @@ export function useCommand(data, focusData) {
             }
             const end = () => {
                 // 拖拽后触发对应指令
-                state.commands.drag()
+                historyState.commands.drag()
             }
             events.on('start', start)
             events.on('end', end)
@@ -114,22 +114,22 @@ export function useCommand(data, focusData) {
         },//初始化方法，默认就会执行,会进行事件订阅
         execute() {
             //!!!闭包，重点块级作用域，都会产生一个作用域记录前后两个状态
-            let state = {
+            let historyState = {
                 // 之前的状态
                 before: this.before,
                 // 最新的状态
                 after: data.value.blocks
             }
             // 每次执行拖拽结束，只要触发了end就会执行这个函数，
-            return { //state.commands.drag()
+            return { //historyState.commands.drag()
                 // 所有命令都会执行mustdo方法
                 mustdo() {
                     // 默认为最新的数据
-                    data.value = { ...data.value, blocks: state.after }
+                    data.value = { ...data.value, blocks: historyState.after }
                 },
                 undo() {
                     // 如果撤销则使用之前的状态
-                    data.value = { ...data.value, blocks: state.before }
+                    data.value = { ...data.value, blocks: historyState.before }
                 }
 
             }
@@ -142,17 +142,17 @@ export function useCommand(data, focusData) {
         name: 'updateContainer',
         pushFlag: true,
         execute(newData) {
-            let state = {
+            let historyState = {
                 before: data.value,
                 after: newData
             }
 
             return {
                 mustdo() {
-                    data.value = state.after
+                    data.value = historyState.after
                 },
                 undo() {
-                    data.value = state.before
+                    data.value = historyState.before
                 }
             }
         }
@@ -163,7 +163,7 @@ export function useCommand(data, focusData) {
         name: 'updateBlock',
         pushFlag: true,
         execute(oddBlock, newBlock, selectIndex = -1) {
-            let state = {
+            let historyState = {
                 before: (() => {
                     // 如果有索引索引优先
                     if (selectIndex >= 0) {
@@ -197,10 +197,10 @@ export function useCommand(data, focusData) {
 
             return {
                 mustdo() {
-                    data.value = { ...data.value, blocks: state.after }
+                    data.value = { ...data.value, blocks: historyState.after }
                 },
                 undo() {
-                    data.value = { ...data.value, blocks: state.before }
+                    data.value = { ...data.value, blocks: historyState.before }
                 }
             }
         }
@@ -214,7 +214,7 @@ export function useCommand(data, focusData) {
         name: 'top',
         pushFlag: true,
         execute() {
-            let state = {
+            let historyState = {
                 before: deepcopy(data.value.blocks),
                 after: (() => {
                     // 找到没有获取焦点元素的最高层，将选中元素在此基础上加1
@@ -230,10 +230,10 @@ export function useCommand(data, focusData) {
 
             return {
                 mustdo() {
-                    data.value = { ...data.value, blocks: state.after }
+                    data.value = { ...data.value, blocks: historyState.after }
                 },
                 undo() {
-                    data.value = { ...data.value, blocks: state.before }
+                    data.value = { ...data.value, blocks: historyState.before }
                 }
             }
         }
@@ -244,7 +244,7 @@ export function useCommand(data, focusData) {
         name: 'bottom',
         pushFlag: true,
         execute() {
-            let state = {
+            let historyState = {
                 before: deepcopy(data.value.blocks),
                 after: (() => {
                     // 找到没有获取焦点元素的最低层，将选中元素在此基础上加-1
@@ -271,10 +271,10 @@ export function useCommand(data, focusData) {
 
             return {
                 mustdo() {
-                    data.value = { ...data.value, blocks: state.after }
+                    data.value = { ...data.value, blocks: historyState.after }
                 },
                 undo() {
-                    data.value = { ...data.value, blocks: state.before }
+                    data.value = { ...data.value, blocks: historyState.before }
                 }
             }
         }
@@ -285,7 +285,7 @@ export function useCommand(data, focusData) {
         name: 'deleteElement',
         pushFlag: true,
         execute() {
-            let state = {
+            let historyState = {
                 before: deepcopy(data.value.blocks),
                 after: (() => {
                     // 选中元素进行删除
@@ -296,10 +296,10 @@ export function useCommand(data, focusData) {
 
             return {
                 mustdo() {
-                    data.value = { ...data.value, blocks: state.after }
+                    data.value = { ...data.value, blocks: historyState.after }
                 },
                 undo() {
-                    data.value = { ...data.value, blocks: state.before }
+                    data.value = { ...data.value, blocks: historyState.before }
                 }
             }
         }
@@ -321,9 +321,9 @@ export function useCommand(data, focusData) {
             keyString = keyString.join('+')
 
             // 遍历所有指令，找到有快捷键的，看是否匹配，匹配则调对应的执行函数
-            state.commandArray.forEach(({ keyboard, name }) => {
+            historyState.commandArray.forEach(({ keyboard, name }) => {
                 if (keyboard == keyString) {
-                    state.commands[name]()
+                    historyState.commands[name]()
                     e.preventDefault();
                 }
             })
@@ -345,17 +345,17 @@ export function useCommand(data, focusData) {
     // 立即执行有初始化的指令的初始化操作
     (() => {
         // 初始化键盘事件
-        state.destroyArray.push(keyboardEvent())
+        historyState.destroyArray.push(keyboardEvent())
 
-        state.commandArray.forEach((command) => {
-            command.init && state.destroyArray.push(command.init())
+        historyState.commandArray.forEach((command) => {
+            command.init && historyState.destroyArray.push(command.init())
         })
     })()
 
     // 销毁执行取消事件订阅
     onUnmounted(() => {
-        state.destroyArray.forEach(fn => fn && fn())
+        historyState.destroyArray.forEach(fn => fn && fn())
     })
-
-    return state
+    console.log('指令注册完成！！！')
+    return historyState
 }
