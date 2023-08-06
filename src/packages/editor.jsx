@@ -14,7 +14,7 @@
 
 
 
-import { computed, defineComponent, inject, ref } from "vue"
+import { computed, defineComponent, inject, provide, ref } from "vue"
 
 // 引入第三方库
 import deepcopy from "deepcopy"
@@ -80,7 +80,7 @@ export default defineComponent({
 
         
         // 2.获取焦点,选中后就可能进行拖拽
-        let { blockMousedown, clearAllFocus, focusData, lastSelectBlock } = useFocus(data, previewRef, (e) => {
+        let { blockMousedown, clearAllFocus, focusData, lastSelectBlock,selectIndex } = useFocus(data, previewRef, (e) => {
             mousedown(e)
         })
 
@@ -189,6 +189,12 @@ export default defineComponent({
             // newProps = newblock
             commands.updateBlock(lastSelectBlock.value,newProps)
         }
+
+        // 这里提供出去给修改大小后代触发历史记录(这里是通过索引更新的形式)
+        const updateBlockPropsByIndex = (oddBlock,newBlock)=>{
+            commands.updateBlock(oddBlock,newBlock,selectIndex.value)
+        }
+        provide('updateBlockPropsByIndex',updateBlockPropsByIndex)
 
         // 预览和编辑模式渲染的DOM
         return () => editorRef.value ? (

@@ -1,4 +1,4 @@
-import { inject, computed, defineComponent, onMounted, ref } from "vue";
+import { inject, computed, defineComponent, onMounted, ref, reactive } from "vue";
 import BlockResize from "./block-resize";
 
 export default defineComponent({
@@ -8,11 +8,12 @@ export default defineComponent({
     },
     setup(props) {
         // 1.计算代码块位置-----------------样式
-        const blockStyle = computed(() => ({
+        const blockPosition = computed(() => ({
             top: props.block.top + 'px',
             left: props.block.left + 'px',
             zIndex: props.block.zIndex,
         }))
+        
 
 
         // 2.获取需要渲染的组件-------------------组件类型
@@ -28,6 +29,11 @@ export default defineComponent({
 
         // 3.挂载后判断是否需要居中---------拖拽挂载后居中
         const blockRef = ref(null)
+        // 记录宽高，修改宽高后通知editor进行记录
+        // const blockSize = reactive({
+        //     width:'',
+        //     height:'',
+        // })
         onMounted(() => {
             let { offsetWidth, offsetHeight } = blockRef.value
             if (props.block.alignCenter) {
@@ -39,7 +45,7 @@ export default defineComponent({
             // 计算宽高
             props.block.width = offsetWidth
             props.block.height = offsetHeight
-
+            // block
         })
 
         // console.log(props.block.props)
@@ -69,7 +75,7 @@ export default defineComponent({
             const RenderComponent = component.render(option)
             const { width, height } = component.resize || {}
             return (
-                <div class="editor-block" style={blockStyle.value} ref={blockRef}>
+                <div class="editor-block" style={blockPosition.value} ref={blockRef}>
                     {RenderComponent}
                     {props.block.focus && (width || height)
                         && <BlockResize resize={component.resize || {}} block={props.block}></BlockResize>}

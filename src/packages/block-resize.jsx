@@ -1,6 +1,7 @@
 // 大小拖拽组件
 
-import { defineComponent } from "vue";
+import deepcopy from "deepcopy";
+import { defineComponent, inject } from "vue";
 
 
 export default defineComponent({
@@ -9,8 +10,15 @@ export default defineComponent({
         block: Object,
     },
     setup(props, ctx) {
-
+        // 注入保存历史记录的方法
+        const updateBlockPropsByIndex = inject('updateBlockPropsByIndex')
+        // 记录拖拽前的block
+        let oddBlock = {}
+        // 记录开始状态
         let startState = {}
+
+        // 记录元素最新状态(不需要了)
+        // let endState = {}
         const mousemove = (e)=>{
             let {startX,startY,startTop,startLeft,startHeight,startWidth,direction} = startState
             // 方向限制
@@ -47,12 +55,16 @@ export default defineComponent({
             props.block.height = height
             props.block.top = top
             props.block.left = left
-
             // 标识是否可以更改大小
             props.block.hasResize = true
 
+            // 更改为最新状态用于历史记录
+            // endState={width,height,top,left}
         }
         const mouseup = (e)=>{
+            // 抬起后记录当前元素的最终宽高,并且发起一个历史记录
+            // console.log("endState",endState)
+            updateBlockPropsByIndex(oddBlock,props.block)
             document.removeEventListener('mousemove',mousemove)
             document.removeEventListener('mouseup',mouseup)
         }
@@ -61,6 +73,8 @@ export default defineComponent({
             // 阻止事件冒泡
             e.preventDefault()
             e.stopPropagation()
+            // 记录拖拽前的状态
+            oddBlock = deepcopy(props.block)
             let {clientX,clientY}=e
             // 记录点击状态
             startState = {

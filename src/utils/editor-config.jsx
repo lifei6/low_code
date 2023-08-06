@@ -2,8 +2,11 @@
 // key====>{preview:,render:,key:,props:,model:}
 
 import { Range } from "@/components/Range";
+import { Text } from "@/components/Text";
 import { ElButton, ElInput, ElOption, ElSelect } from "element-plus";
 
+
+// 组件注册中心
 function createEditorConfig() {
     // 组件列表
     const componentList = []
@@ -22,25 +25,25 @@ function createEditorConfig() {
 }
 
 
-// 注册组件
-export let registerConfig = createEditorConfig();
-// 属性输入需要什么框----采用工厂函数进行构造
+// 属性输入需要渲染什么类型的框----------------------采用工厂函数进行构造
 const createInputProp = (label) => ({ type: 'input', label })
 const createColorProp = (label) => ({ type: 'color', label })
 const createSelcetProp = (label, options) => ({ type: 'select', label, options })
 const createTableProp = (label, table) => ({ type: 'table', label, table })
 
+// 注册组件
+export let registerConfig = createEditorConfig();
 
 // 1.文本框
 registerConfig.register({
     label: '文本',
     key: 'text',
-    resize:{
-        width:true,
-        height:true
+    resize: {
+        width: true,
+        height: true
     },
-    preview: () => '预览文本',
-    render: ({ size,props }) => <div style={{...size, color: props.color, fontSize: props.fontSize,display:"flex",justifyContent:"center",alignItems:"center" }}>{props.text || '渲染文本'}</div>,
+    preview: () => <Text>预览文本</Text>,
+    render: ({ size, props }) => <Text {...size} color={props.color} fontSize={props.fontSize}>{props.text || "渲染文本"}</Text>,
     props: {
         text: createInputProp('文本内容'),
         color: createColorProp('字体颜色'),
@@ -57,12 +60,12 @@ registerConfig.register({
 registerConfig.register({
     label: '按钮',
     key: 'button',
-    resize:{
-        width:true,
-        height:true,
+    resize: {
+        width: true,
+        height: true,
     },
     preview: () => <ElButton>预览按钮</ElButton>,
-    render: ({ size,props }) => <ElButton style={{width:size.width,height:size.height}} type={props.type} size={props.size}>{props.text || "渲染按钮"}</ElButton>,
+    render: ({ size, props }) => <ElButton style={{ width: size.width, height: size.height }} type={props.type} size={props.size}>{props.text || "渲染按钮"}</ElButton>,
     props: {
         text: createInputProp('按钮内容'),
         type: createSelcetProp('按钮类型', [
@@ -89,15 +92,15 @@ registerConfig.register({
 registerConfig.register({
     label: '输入框',
     key: 'input',
-    resize:{
-        width:true,
-        height:false,
+    resize: {
+        width: true,
+        height: false,
     },
     preview: () => <ElInput placeholder="预览输入框" />,
-    render: ({ size,props, model }) => {
+    render: ({ size, props, model }) => {
         // console.log("model",model)
         //modelValue:输入值 "onUpdate:modelValue":更新函数
-        return <ElInput style={{width:size.width}} placeholder={props.text || "渲染输入框"} {...model.default} />
+        return <ElInput style={{ width: size.width }} placeholder={props.text || "渲染输入框"} {...model.default} />
     },
     props: {
 
@@ -111,19 +114,27 @@ registerConfig.register({
 registerConfig.register({
     label: '范围框',
     key: 'range',
+    resize: {
+        width: true,
+        height: true
+    },
     preview: () => <Range></Range>,
-    render: ({ props, model }) => {
-        // console.log("model",model)
-        return <Range {...{
-            start: model.start.modelValue,
-            end: model.end.modelValue,
-            "onUpdate:start": model.start["onUpdate:modelValue"],
-            "onUpdate:end": model.end["onUpdate:modelValue"]
-        }}></Range>
+    render: ({size, props, model }) => {
+        return <Range
+            // 实现多个属性双绑
+            {...{
+                start: model.start.modelValue,
+                end: model.end.modelValue,
+                "onUpdate:start": model.start["onUpdate:modelValue"],
+                "onUpdate:end": model.end["onUpdate:modelValue"]
+            }}
+            // 样式属性传递
+            style={size}
+        ></Range>
     },
     model: {
-        start: '开始范围字段',
-        end: '结束范围字段'
+        start: '绑定开始范围字段',
+        end: '绑定结束范围字段'
     }
 })
 
@@ -132,8 +143,12 @@ registerConfig.register({
 registerConfig.register({
     label: '下拉框',
     key: 'select',
-    preview: () => <ElSelect></ElSelect>,
-    render: ({ props,model }) => (<ElSelect {...model.default}>
+    resize:{
+        width:true,
+        height:false
+    },
+    preview: () => <ElSelect placeholder='预览下拉框'></ElSelect>,
+    render: ({ size,props, model }) => (<ElSelect {...model.default} placeholder='渲染下拉框' style={{width:size.width,minWidth:'100px'}}>
         {
             (props.options || []).map((opt, idx) => {
                 return <ElOption label={opt.label} value={opt.value} key={idx}></ElOption>
@@ -149,7 +164,7 @@ registerConfig.register({
             tag: "label",//显示给用户的值是属性值label，还是实际值value
         }),
     },
-    model:{
-        default:"绑定字段",//选择框选择的值
+    model: {
+        default: "绑定字段",//选择框选择的值
     }
 })

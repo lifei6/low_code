@@ -160,33 +160,54 @@ export function useCommand(data, focusData) {
 
     //  4.2下拉菜单导入组件代码块JSON（更新block）
     registry({
-        name:'updateBlock',
-        pushFlag:true,
-        execute(oddBlock,newBlock){
-            let state ={
-                before:deepcopy(data.value.blocks),
-                after:(()=>{
-                    // 1.找到旧代码块的位置索引
-                    let blockIndex = data.value.blocks.indexOf(oddBlock)
-                    console.log("blockIndex",blockIndex)
-                    // 2.如果找到（肯定有）
-                    if(blockIndex>-1){
-                        data.value.blocks.splice(blockIndex,1,newBlock) 
-                    }               
-                    return data.value.blocks
+        name: 'updateBlock',
+        pushFlag: true,
+        execute(oddBlock, newBlock, selectIndex = -1) {
+            let state = {
+                before: (() => {
+                    // 如果有索引索引优先
+                    if (selectIndex >= 0) {
+                        let blocks = deepcopy(data.value.blocks)
+                        blocks[selectIndex] = oddBlock
+                        return blocks
+                    } else {
+                        return deepcopy(data.value.blocks)
+                    }
+
+                })(),
+                after: (() => {
+                    if (selectIndex >= 0) {
+                        console.log("blockIndex", selectIndex)
+                        let blocks = deepcopy(data.value.blocks)
+                        blocks[selectIndex] = newBlock
+                        return blocks
+                    } else {
+                        // 1.找到旧代码块的位置索引
+                        let blockIndex = data.value.blocks.indexOf(oddBlock)
+                        console.log("blockIndex", blockIndex)
+                        // 2.如果找到（肯定有）
+                        if (blockIndex > -1) {
+                            data.value.blocks.splice(blockIndex, 1, newBlock)
+                        }
+                        return data.value.blocks
+                    }
+
                 })()
             }
 
             return {
-                mustdo(){
-                    data.value = {...data.value,blocks:state.after}
+                mustdo() {
+                    data.value = { ...data.value, blocks: state.after }
                 },
-                undo(){
-                    data.value = {...data.value,blocks:state.before}
+                undo() {
+                    data.value = { ...data.value, blocks: state.before }
                 }
             }
         }
     })
+
+    // // 4.3根据索引更新代码块（更新block）
+    // registry()
 
     // 5.置顶功能
     registry({
@@ -268,7 +289,7 @@ export function useCommand(data, focusData) {
                 before: deepcopy(data.value.blocks),
                 after: (() => {
                     // 选中元素进行删除
-                    let blocks = data.value.blocks.filter((block)=>!block.focus)
+                    let blocks = data.value.blocks.filter((block) => !block.focus)
                     return blocks
                 })()
             }

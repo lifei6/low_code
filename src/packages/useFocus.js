@@ -64,6 +64,7 @@ export function useFocus(data, previewRef, callback) {
         blockMousedown,
         clearAllFocus,
         focusData,
-        lastSelectBlock
+        lastSelectBlock,
+        selectIndex
     }
 }
