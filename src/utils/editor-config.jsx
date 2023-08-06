@@ -30,6 +30,7 @@ const createInputProp = (label) => ({ type: 'input', label })
 const createColorProp = (label) => ({ type: 'color', label })
 const createSelcetProp = (label, options) => ({ type: 'select', label, options })
 const createTableProp = (label, table) => ({ type: 'table', label, table })
+const createButtonProp = (label)=>({type:'button',label})
 
 // 注册组件
 export let registerConfig = createEditorConfig();
@@ -65,25 +66,25 @@ registerConfig.register({
         height: true,
     },
     preview: () => <ElButton>预览按钮</ElButton>,
-    render: ({ size, props }) => <ElButton style={{ width: size.width, height: size.height }} type={props.type} size={props.size}>{props.text || "渲染按钮"}</ElButton>,
+    render: ({ size, props }) => <ElButton style={{ width: size.width, height: size.height }} type={props.type} size={props.size} round={props.round}>{props.text || "渲染按钮"}</ElButton>,
     props: {
         text: createInputProp('按钮内容'),
         type: createSelcetProp('按钮类型', [
             // {用户看到的,实际的值}
-            { label: '基础按钮', value: 'primary' },
+            { label: '默认按钮', value: '' },
+            { label: '主题按钮', value: 'primary' },
             { label: '成功按钮', value: 'success' },
             { label: '警告按钮', value: 'warning' },
             { label: '危险按钮', value: 'danger' },
-            { label: '文本按钮', value: 'text' },
+            { label: '信息按钮', value: 'info' },
         ]),
         size: createSelcetProp('按钮大小', [
             // {用户看到的,实际的值}
             { label: '默认', value: '' },
             { label: '大', value: 'large' },
-            { label: '中等', value: 'medium' },
-            { label: '小', value: 'samll' },
+            { label: '小', value: 'small' },
         ]),
-
+        round:createButtonProp('圆形按钮')
     },
 })
 

@@ -15,7 +15,6 @@ export default defineComponent({
         }))
         
 
-
         // 2.获取需要渲染的组件-------------------组件类型
         const config = inject('config')
         // 必须写成函数：原因就是key改变后，组件重新更新

@@ -35,8 +35,8 @@ export function useCommand(data, focusData) {
                 state.queue.push({ mustdo, undo })
                 state.current = state.current + 1
 
-                console.log("state.queue", state.queue)
-                console.log('current', state.current)
+                console.log("历史队列", state.queue)
+                console.log('当前队列索引', state.current)
             }
         }
 
@@ -177,14 +177,14 @@ export function useCommand(data, focusData) {
                 })(),
                 after: (() => {
                     if (selectIndex >= 0) {
-                        console.log("blockIndex", selectIndex)
+                        // console.log("blockIndex", selectIndex)
                         let blocks = deepcopy(data.value.blocks)
                         blocks[selectIndex] = newBlock
                         return blocks
                     } else {
                         // 1.找到旧代码块的位置索引
                         let blockIndex = data.value.blocks.indexOf(oddBlock)
-                        console.log("blockIndex", blockIndex)
+                        // console.log("blockIndex", blockIndex)
                         // 2.如果找到（肯定有）
                         if (blockIndex > -1) {
                             data.value.blocks.splice(blockIndex, 1, newBlock)

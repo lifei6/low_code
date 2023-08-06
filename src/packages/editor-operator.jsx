@@ -37,6 +37,16 @@ export default defineComponent({
         }
 
         watch(() => props.block, reset, { immediate: true })
+
+
+        // 处理右侧点击按钮收集布尔值
+        const clickHander = (e,propName)=>{
+            if(state.editData.props[propName]==undefined){
+                state.editData.props[propName] = true
+            }else{
+                state.editData.props[propName]=!state.editData.props[propName]
+            }
+        }
         return () => {
             let { block } = props
             // console.log( config.componentMap[block.value.key])
@@ -64,6 +74,7 @@ export default defineComponent({
                         return <ElFormItem label={propConfig.label}>
                             {/* 不同的type属性渲染不同的组件 */}
                             {{
+                                button:()=><ElButton onClick={e=>clickHander(e,propName)}>{!state.editData.props[propName]?'切换为圆形按钮':'切换为方型按钮'}</ElButton>,//按钮
                                 input: () => <ElInput v-model={state.editData.props[propName]}></ElInput>, //输入框情况
                                 color: () => <ElColorPicker v-model={state.editData.props[propName]}></ElColorPicker>,//颜色选择器
                                 select: () => <ElSelect v-model={state.editData.props[propName]}>
@@ -76,7 +87,7 @@ export default defineComponent({
                                 table: () => <TableEditor
                                     propConfig={propConfig}
                                     v-model={state.editData.props[propName]} //{props:{options:''},top,left}
-                                ></TableEditor>//表格
+                                ></TableEditor>,//表格
                             }[propConfig.type]()}
 
                         </ElFormItem>

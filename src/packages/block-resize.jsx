@@ -8,6 +8,7 @@ export default defineComponent({
     props: {
         resize: Object,
         block: Object,
+        // updateBlockPropsByIndex:Function,
     },
     setup(props, ctx) {
         // 注入保存历史记录的方法
