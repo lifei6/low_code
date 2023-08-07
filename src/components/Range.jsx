@@ -32,9 +32,9 @@ export const Range = defineComponent({
 
         return ()=>{
             return <div class = 'range' style={props.style}>
-                <input type="text" v-model={start.value}/>
+                <input type="text" v-model={start.value} placeholder="开始范围"/>
                 <span>~</span>
-                <input type="text" v-model={end.value}/>
+                <input type="text" v-model={end.value} placeholder="结束范围"/>
             </div>
         }
     }

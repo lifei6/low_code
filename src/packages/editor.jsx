@@ -287,7 +287,7 @@ export default defineComponent({
                     }
                 </div>
                 <ElButton type="primary" onClick={e => editorRef.value = true}>点击返回编辑</ElButton>
-                {JSON.stringify(props.formData)}
+                <div>表单数据：<span>{JSON.stringify(props.formData)}</span></div>
             </div>
         )
 
