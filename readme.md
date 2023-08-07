@@ -16,7 +16,7 @@
 
 - 左侧物料区
 - 顶部菜单栏
-- 右侧属性控制栏目
+- 右侧属性编辑区
 - 中间的渲染区
 
 ### 初始JSON数据结构
@@ -65,6 +65,58 @@ props:{
 
 
 ### 注册命令的数据结构command
+
+```js
+    // 3.注册一个拖拽命令
+    registry({
+        name: 'drag',
+        pushFlag: true,//标识操作需要放队列中
+        init() {
+            // 初始化记录之前的状态   this-->就是这个注册的指令对象
+            this.before = null
+            // 发布消息
+            const start = () => {
+                // 拖拽前记录之前的状态
+                this.before = deepcopy(data.value.blocks)
+            }
+            const end = () => {
+                // 拖拽后触发对应指令
+                historyState.commands.drag()
+            }
+            events.on('start', start)
+            events.on('end', end)
+            // 组件销毁需要解绑事件，返回一个解绑事件的函数
+            return () => {
+                events.off('start', start)
+                events.off('end', end)
+            }
+        },//初始化方法，默认就会执行,会进行事件订阅
+        execute() {
+            //!!!闭包，重点块级作用域，都会产生一个作用域记录前后两个状态
+            let historyState = {
+                // 之前的状态
+                before: this.before,
+                // 最新的状态
+                after: data.value.blocks
+            }
+            // 每次执行拖拽结束，只要触发了end就会执行这个函数，
+            return { //historyState.commands.drag()
+                // 所有命令都会执行mustdo方法
+                mustdo() {
+                    // 默认为最新的数据
+                    data.value = { ...data.value, blocks: historyState.after }
+                },
+                undo() {
+                    // 如果撤销则使用之前的状态
+                    data.value = { ...data.value, blocks: historyState.before }
+                }
+
+            }
+        },//执行器
+    });
+```
+
+
 
 
 
