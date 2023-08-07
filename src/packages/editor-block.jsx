@@ -1,4 +1,4 @@
-import { inject, computed, defineComponent, onMounted, ref, reactive } from "vue";
+import { inject, computed, defineComponent, onMounted, ref } from "vue";
 import BlockResize from "./block-resize";
 
 export default defineComponent({

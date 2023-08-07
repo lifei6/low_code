@@ -31,10 +31,10 @@ import { $contextMenu } from "@/components/ContextMenu"
 import { ContextItem } from "@/components/ContextItem"
 
 // 引入自定义功能Compostion API
-import { useMenvDragger } from './useMenvDragger'
-import { useFocus } from "./useFocus"
-import { useBlockDragger } from "./useBlockDragger"
-import { useCommand } from "./useCommand"
+import { useMenvDragger } from '@/hooks/useMenvDragger'
+import { useFocus } from "@/hooks/useFocus"
+import { useBlockDragger } from "@/hooks/useBlockDragger"
+import { useCommand } from "@/hooks/useCommand"
 
 
 export default defineComponent({
