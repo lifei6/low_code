@@ -1,20 +1,23 @@
 import { inject, computed, defineComponent, onMounted, ref } from "vue";
 import BlockResize from "./block-resize";
+import useSystemStore from "@/store/system/system"
 
 export default defineComponent({
+    name: 'block',
     props: {
         block: Object,
-        formData: Object,
-        preview:Boolean,
+        preview: Boolean,
     },
     setup(props) {
+        const systemStore = useSystemStore()
+
         // 1.计算代码块位置-----------------样式
         const blockPosition = computed(() => ({
             top: props.block.top + 'px',
             left: props.block.left + 'px',
             zIndex: props.block.zIndex,
         }))
-        
+
 
         // 2.获取需要渲染的组件-------------------组件类型
         const config = inject('config')
@@ -29,11 +32,6 @@ export default defineComponent({
 
         // 3.挂载后判断是否需要居中---------拖拽挂载后居中
         const blockRef = ref(null)
-        // 记录宽高，修改宽高后通知editor进行记录
-        // const blockSize = reactive({
-        //     width:'',
-        //     height:'',
-        // })
         onMounted(() => {
             let { offsetWidth, offsetHeight } = blockRef.value
             if (props.block.alignCenter) {
@@ -48,25 +46,24 @@ export default defineComponent({
             // block
         })
 
-        // console.log(props.block.props)
         return () => {
             // 方式2
             const component = config.componentMap[props.block.key]
             // props.block.model = {default：输入的字段例如username}      
             let option = {
-                size: props.block.hasResize?{
-                    width: props.block.width+'px',
-                    height: props.block.height+'px',
-                }:{},
+                size: props.block.hasResize ? {
+                    width: props.block.width + 'px',
+                    height: props.block.height + 'px',
+                } : {},
                 props: props.block.props,
                 model: Object.keys(component.model || {}).reduce((prev, modelName) => {
                     let propName = props.block.model[modelName]  //输入的字段例如username
                     // console.log("propName",propName)
                     prev[modelName] = {          // {default:{modelValue:lifei,"onUpdate:modelValue":huxuan=>lifei=huxuan}}
-                        modelValue: props.formData[propName],
+                        modelValue: systemStore.formData[propName],
                         "onUpdate:modelValue": v => {
                             // console.log('值更新执行了',v)
-                            props.formData[propName] = v //如果是属性操作区绑定新输入字段则会添加一个属性到formData，渲染区输入框的值会给这个属性
+                            systemStore.formData[propName] = v //如果是属性操作区绑定新输入字段则会添加一个属性到formData，渲染区输入框的值会给这个属性
                         }
                     }
                     return prev

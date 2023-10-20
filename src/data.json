@@ -5,62 +5,62 @@
     },
     "blocks": [
         {
+            "id": "001",
             "top": 100,
             "left": 100,
             "zIndex": 1,
             "key": "text",
             "props": {
-                "text":"小猫低代码",
-                "color":"#ff0000",
-                "fontSize":"14px"
+                "text": "小猫低代码",
+                "color": "#ff0000",
+                "fontSize": "14px"
             }
         },
         {
+            "id": "002",
             "top": 100,
             "left": 300,
             "zIndex": 1,
             "key": "button",
             "props": {
-                "text":"点俺一下斯斯",
-                "type":"primary",
-                "size":"small"
+                "text": "点俺一下斯斯",
+                "type": "primary",
+                "size": "small"
             }
         },
         {
+            "id": "003",
             "top": 200,
             "left": 50,
             "zIndex": 1,
             "key": "input",
-            "props":{
-        
-            },
-            "model":{
-                
-            }
+            "props": {},
+            "model": {}
         },
         {
-            "top":200,
-            "left":300,
-            "zIndex":1,
-            "key":"range",
-            "props":{
-
-            },
-            "model":{
-                
-            }
+            "id": "004",
+            "top": 200,
+            "left": 300,
+            "zIndex": 1,
+            "key": "range",
+            "props": {},
+            "model": {}
         },
         {
-            "top":300,
-            "left":300,
-            "zIndex":1,
-            "key":"select",
-            "props":{
-                "options":[{"label":"a","value":1}]
+            "id": "005",
+            "top": 300,
+            "left": 300,
+            "zIndex": 1,
+            "key": "select",
+            "props": {
+                "options": [
+                    {
+                        "label": "a",
+                        "value": 1
+                    }
+                ]
             },
-            "model":{
-                
-            }
+            "model": {}
         }
     ]
 }
