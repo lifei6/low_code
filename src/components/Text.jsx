@@ -3,29 +3,30 @@
 
 import { defineComponent } from "vue";
 
-export const Text =defineComponent({
-    props:{
-        width:{
-            type:String,
-            default:'100px',
+export const Text = defineComponent({
+    name: 'text',
+    props: {
+        width: {
+            type: String,
+            default: '100px',
         },
-        height:{
-            type:String,
-            default:'40px',
+        height: {
+            type: String,
+            default: '40px',
         },
-        color:{
-            type:String,
-            default:"black",
+        color: {
+            type: String,
+            default: "black",
         },
-        fontSize:{
-            type:String,
-            default:"14px",
+        fontSize: {
+            type: String,
+            default: "14px",
         },
     },
-    setup(props,ctx){
-        return ()=>{
-            const {width,height,color,fontSize}=props
-            return  <div style={{width,height,color,fontSize,display:"flex",justifyContent:"center",alignItems:"center",overflow:"hidden" }}>{ctx.slots.default()}</div>
+    setup(props, ctx) {
+        return () => {
+            const { width, height, color, fontSize } = props
+            return <div style={{ width, height, color, fontSize, display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden" }}>{ctx.slots.default()}</div>
         }
     }
 })

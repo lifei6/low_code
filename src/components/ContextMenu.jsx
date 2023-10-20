@@ -22,7 +22,6 @@ const ContextMenuComponent = defineComponent({
         // 点击页面隐藏菜单栏
         let el = ref(null)
         const reset = (e) => {
-
             // 获取到真实DOM才执行回调,因为这个组件ContextMenu是没有卸载的，只是里面返回了一个空的节点
             if (!el.value) return;
             // 点击的不是菜单里面菜隐藏
@@ -53,19 +52,20 @@ const ContextMenuComponent = defineComponent({
             },
         })
         // 隐藏菜单
-        const hidden= ()=>{
+        const hidden = () => {
             state.isShow = false
         }
-        provide('hidden',hidden)
+        provide('hidden', hidden)
 
-        // 获取指令
 
         return () => {
-            return state.isShow && (<div class='block-menu' style={menuStyle.value} ref={el}>
-                {
-                    state.option.context()
-                }
-            </div>)
+            return state.isShow && (
+                <div class='block-menu' style={menuStyle.value} ref={el}>
+                    {
+                        state.option.context()
+                    }
+                </div>
+            )
         }
     }
 })
