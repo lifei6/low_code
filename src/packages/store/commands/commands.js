@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import data from '@/data.json'
+import data from '@/packages/data.json'
 import deepcopy from 'deepcopy';
 import { v4 as uuidv4 } from 'uuid';
 // 历史记录的类型有：changeType = add | delete | update | importJSON ...

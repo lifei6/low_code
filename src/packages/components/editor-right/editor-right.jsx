@@ -2,9 +2,8 @@ import deepcopy from "deepcopy";
 import { ElButton, ElColorPicker, ElForm, ElFormItem, ElInput, ElInputNumber, ElOption, ElSelect } from "element-plus";
 import { defineComponent, inject, reactive, watch } from "vue";
 
-
-import TableEditor from "./table-editor"
-import useCommandsStore from "@/store/commands/commands";
+import TableEditor from "./c-cpns/table-editor/table-editor"
+import useCommandsStore from "@/packages/store/commands/commands";
 
 export default defineComponent({
     name: 'editor-right',

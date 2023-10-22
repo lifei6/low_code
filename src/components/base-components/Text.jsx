@@ -4,7 +4,7 @@
 import { defineComponent } from "vue";
 
 export const Text = defineComponent({
-    name: 'text',
+    name: 'custom-text',
     props: {
         width: {
             type: String,

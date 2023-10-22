@@ -1,6 +1,6 @@
 import { inject, computed, defineComponent, onMounted, ref } from "vue";
-import BlockResize from "./block-resize";
-import useSystemStore from "@/store/system/system"
+import BlockResize from "./c-cpns/block-resize/block-resize";
+import useSystemStore from "@/packages/store/system/system"
 
 export default defineComponent({
     name: 'block',

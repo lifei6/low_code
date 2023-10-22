@@ -1,8 +1,8 @@
 // 菜单按钮配置
 
-import { $dialog } from "@/components/Dialog"
-import useCommandsStore from "@/store/commands/commands"
-import useSystemStore from "@/store/system/system"
+import { $dialog } from "@/packages/base-ui/dialog/Dialog"
+import useCommandsStore from "@/packages/store/commands/commands"
+import useSystemStore from "@/packages/store/system/system"
 
 // 添加按钮和回调
 export function useButton() {
@@ -41,21 +41,21 @@ export function useButton() {
         {
             label: () => systemStore.preview ? '编辑' : '预览', icon: 'icon-yulan', handler: () => {
                 // 点击能切换预览模式
-                systemStore.switchPreview(true)
+                systemStore.switchPreview()
                 commandsStore.clearAllFocus()
                 // 如果当前是预览模式则去除遮罩
             }
         },
         {
             label: () => '关闭', icon: 'icon-guanbi1', handler: () => {
-                systemStore.switchEditorRef(false)
+                systemStore.switchEditor(false)
             }
         },
-        {
-            label: () => '切换拖拽', icon: 'icon-shanchu', handler: () => {
-                systemStore.switchVuedrag()
-            }
-        }
+        // {
+        //     label: () => '切换拖拽', icon: 'icon-shanchu', handler: () => {
+        //         systemStore.switchVuedrag()
+        //     }
+        // }
 
     ]
 

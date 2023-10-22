@@ -1,12 +1,16 @@
 import { defineComponent, computed } from "vue";
 // 数据
-import useCommandsStore from "@/store/commands/commands"
-import useSystemStore from "@/store/system/system"
+import useCommandsStore from "@/packages/store/commands/commands"
+import useSystemStore from "@/packages/store/system/system"
 // 聚焦拖拽
-import { useFocus } from "@/hooks/useFocus";
-import { useBlockDragger } from "@/hooks/useBlockDragger";
+import { useFocus } from "@/packages/hooks/useFocus";
+import { useBlockDragger } from "@/packages/hooks/useBlockDragger";
 // 单个组件
-import EditorBlock from "./editor-block";
+import EditorBlock from "./c-cpns/editor-block/editor-block";
+
+// 右击菜单栏
+import { $contextMenu } from "@/packages/base-ui/context-menu/ContextMenu";
+import { ContextItem } from "@/packages/base-ui/context-menu/ContextItem";
 
 export default defineComponent({
     name: 'editor-container',
@@ -97,6 +101,7 @@ export default defineComponent({
                                         onContextmenu={e => blockContextmenu(e, block)}
                                         //预览模式
                                         preview={systemStore.preview}
+                                        key={block.id}
                                     >
                                     </EditorBlock>
                                 ))

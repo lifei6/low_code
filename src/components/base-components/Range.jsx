@@ -1,13 +1,14 @@
+// 范围框
 import { defineComponent, computed } from "vue";
 
 export const Range = defineComponent({
-    name: 'range',
+    name: 'custom-range',
     props: {
         start: Number,
         end: Number,
         style: {
             type: Object,
-            default: { height: '30px', width: '200px' }
+            default: { height: '30px', width: '200px', outline: "none" }
         }
     },
     emits: ['update:start', 'update:end'],

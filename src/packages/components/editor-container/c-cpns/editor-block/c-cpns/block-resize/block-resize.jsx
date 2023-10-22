@@ -1,6 +1,6 @@
-// 大小拖拽组件
+// 大小拖拽框组件
 
-import useCommandsStore from "@/store/commands/commands";
+import useCommandsStore from "@/packages/store/commands/commands";
 import deepcopy from "deepcopy";
 import { defineComponent } from "vue";
 

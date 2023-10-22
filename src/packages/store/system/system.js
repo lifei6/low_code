@@ -19,13 +19,15 @@ const useSystemStore = defineStore('system', {
         vuedrag: true
     }),
     actions: {
-        switchPreview(newValue) {
-            console.log('模式切换了')
-            this.preview = newValue
+        // 切换能填写数字
+        switchPreview() {
+            this.preview = !this.preview
         },
+        // 切换到预览页面
         switchEditor(newValue) {
             this.editor = newValue
         },
+        // TODO:将来进行两种拖拽模式切换
         switchVuedrag() {
             this.vuedrag = !this.vuedrag
         },

@@ -1,4 +1,4 @@
-import { $contextMenu } from "@/components/ContextMenu"
+import { $contextMenu } from "@/packages/base-ui/context-menu/ContextMenu"
 
 
 export function useContextmenu() {

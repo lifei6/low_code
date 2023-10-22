@@ -1,7 +1,7 @@
 // 内容菜单框
 import { computed, createVNode, defineComponent, onBeforeUnmount, onMounted, reactive, render, ref, provide } from "vue";
 
-const ContextMenuComponent = defineComponent({
+const BlockContextMenu = defineComponent({
     props: {
         //初始化的option，只有组件第一次创建时会传入，后面需要更新
         option: Object,
@@ -85,7 +85,7 @@ export function $contextMenu(option) {
         //     render(null, el)
         // }
         // 2.创建虚拟节点
-        vm = createVNode(ContextMenuComponent, { option })
+        vm = createVNode(BlockContextMenu, { option })
         // 3.虚拟节点（组件）挂载到真实DOM容器，DOM挂载到页面上去
         render(vm, el)
         document.body.appendChild(el)

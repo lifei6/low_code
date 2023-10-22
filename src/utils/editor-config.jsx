@@ -1,8 +1,8 @@
 // json数据的key和  物料区组件 和 实例组件 以及 属性操作栏预设属性配置框 的映射关系
 // key====>{preview:,render:,key:,props:,model:}
 
-import { Range } from "@/components/Range";
-import { Text } from "@/components/Text";
+import { Range } from "@/components/base-components/Range";
+import { Text } from "@/components/base-components/Text";
 import { ElButton, ElInput, ElOption, ElSelect } from "element-plus";
 
 
@@ -30,7 +30,7 @@ const createInputProp = (label) => ({ type: 'input', label })
 const createColorProp = (label) => ({ type: 'color', label })
 const createSelcetProp = (label, options) => ({ type: 'select', label, options })
 const createTableProp = (label, table) => ({ type: 'table', label, table })
-const createButtonProp = (label)=>({type:'button',label})
+const createButtonProp = (label) => ({ type: 'button', label })
 
 // 注册组件
 export let registerConfig = createEditorConfig();
@@ -84,7 +84,7 @@ registerConfig.register({
             { label: '大', value: 'large' },
             { label: '小', value: 'small' },
         ]),
-        round:createButtonProp('圆形按钮')
+        round: createButtonProp('圆形按钮')
     },
 })
 
@@ -120,7 +120,7 @@ registerConfig.register({
         height: true
     },
     preview: () => <Range></Range>,
-    render: ({size, props, model }) => {
+    render: ({ size, props, model }) => {
         return <Range
             // 实现多个属性双绑
             {...{
@@ -144,12 +144,12 @@ registerConfig.register({
 registerConfig.register({
     label: '下拉框',
     key: 'select',
-    resize:{
-        width:true,
-        height:false
+    resize: {
+        width: true,
+        height: false
     },
     preview: () => <ElSelect placeholder='预览下拉框'></ElSelect>,
-    render: ({ size,props, model }) => (<ElSelect {...model.default} placeholder='渲染下拉框' style={{width:size.width,minWidth:'100px'}}>
+    render: ({ size, props, model }) => (<ElSelect {...model.default} placeholder='渲染下拉框' style={{ width: size.width, minWidth: '100px' }}>
         {
             (props.options || []).map((opt, idx) => {
                 return <ElOption label={opt.label} value={opt.value} key={idx}></ElOption>
