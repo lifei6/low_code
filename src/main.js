@@ -1,10 +1,19 @@
 import { createApp } from 'vue'
-// 引入样式
-import 'element-plus/dist/index.css'
-import App from './App.vue'
 
+// 引入样式
+// 样式重置
+import 'normalize.css'
+// import 'element-plus/theme-chalk/el-message.css'
+// 引入element-plus的全部样式
+import 'element-plus/dist/index.css'
+import '@/assets/css/index.scss'
+
+import App from './App.vue'
 // 引入仓库
 import store from './store'
+
+// elemnet图标注册为全局组件
+import icons from './global/register-icons'
 
 // 解决elemnet-plus中使用el-table的ResizeObserver loop limit exceeded问题
 const debounce = (fn, delay) => {
@@ -30,5 +39,6 @@ window.ResizeObserver = class ResizeObserver extends _ResizeObserver {
 
 
 const app = createApp(App)
+app.use(icons)
 app.use(store)
 app.mount('#app')

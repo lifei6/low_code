@@ -1,29 +1,20 @@
-// 顶部按钮
-import { useButton } from "@/packages/hooks/useButtons";
+// 顶部
 import { defineComponent } from "vue";
+import styles from './style.module.scss'
+import LeftLogo from "./c-cpns/left-logo/left-logo";
+import CenterButton from "./c-cpns/center-button/center-button";
+import RightUser from "./c-cpns/right-user/right-user";
 
 export default defineComponent({
     name: 'editor-top',
     setup() {
-        const buttons = useButton()
         return () => {
             return (
-                <>
-                    {
-                        buttons.map((btn, idx) => {
-                            let label = btn.label()
-                            return (
-                                <div
-                                    class='editor-top-button'
-                                    onClick={e => btn.handler()}
-                                    key={label}
-                                >
-                                    <div class={`iconfont ${btn.icon}`}></div>
-                                    <div class='btn-label'>{label}</div>
-                                </div>)
-                        })
-                    }
-                </>
+                <div class={styles.top}>
+                    <LeftLogo></LeftLogo>
+                    <CenterButton></CenterButton>
+                    <RightUser></RightUser>
+                </div>
             )
         }
     }

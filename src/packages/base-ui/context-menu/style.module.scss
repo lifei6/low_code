@@ -1,0 +1,30 @@
+.menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 200px;
+  width: 120px;
+  border: 1px solid #ede0e0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  box-shadow: 0 2px 0px 2px rgba(0, 0, 0, 0.2);
+  z-index: 99;
+}
+
+.item {
+  width: 100%;
+  flex: 1;
+  border: 1px solid #ede0e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  user-select: none;
+  cursor: pointer;
+  > span {
+    margin-left: 10px;
+  }
+}

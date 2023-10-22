@@ -1,0 +1,52 @@
+// 拖拽点的样式
+.dot {
+    height: 8px;
+    width: 8px;
+    box-sizing: border-box;
+    background-color: black;
+    z-index: 9999;
+    // border-radius: 50%;
+    position: absolute;
+    user-select: none;
+  }
+  
+  // 中间四个点
+  .centerStart {
+    top: -3px;
+    left: calc(50% - 4px);
+  }
+  
+  .centerEnd {
+    bottom: -3px;
+    left: calc(50% - 4px);
+  }
+  
+  .startCenter {
+    top: calc(50% - 4px);
+    left: -3px;
+  }
+  .endCenter {
+    top: calc(50% - 4px);
+    right: -3px;
+  }
+  
+  // 四个角的点
+  .startStart {
+    top: -3px;
+    left: -3px;
+  }
+  
+  .endStart {
+    top: -3px;
+    right: -3px;
+  }
+  
+  .startEnd {
+    bottom: -3px;
+    left: -3px;
+  }
+  
+  .endEnd {
+    bottom: -3px;
+    right: -3px;
+  }

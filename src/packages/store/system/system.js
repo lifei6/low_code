@@ -9,9 +9,9 @@ const useSystemStore = defineStore('system', {
             start: 0,
             end: 100,
         },
-        // 加个字段判断是否为预览模式
+        // 加个字段判断是否为预览模式(编辑页面里面组件有无遮罩层)
         preview: false,
-        // 加个字段判断是否只留内容区
+        // 加个字段判断进入预览页面
         editor: true,
 
         // TODO:兼容两种布局模式

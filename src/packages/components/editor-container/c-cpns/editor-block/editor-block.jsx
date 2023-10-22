@@ -2,6 +2,9 @@ import { inject, computed, defineComponent, onMounted, ref } from "vue";
 import BlockResize from "./c-cpns/block-resize/block-resize";
 import useSystemStore from "@/packages/store/system/system"
 
+// 样式
+import styles from './style.module.scss'
+
 export default defineComponent({
     name: 'block',
     props: {
@@ -72,7 +75,7 @@ export default defineComponent({
             const RenderComponent = component.render(option)
             const { width, height } = component.resize || {}
             return (
-                <div class="editor-block" style={blockPosition.value} ref={blockRef}>
+                <div class={styles.block} style={blockPosition.value} ref={blockRef}>
                     {RenderComponent}
                     {props.block.focus && !props.preview && (width || height)
                         && <BlockResize resize={component.resize || {}} block={props.block}></BlockResize>}

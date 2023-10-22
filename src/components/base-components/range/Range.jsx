@@ -1,5 +1,6 @@
 // 范围框
 import { defineComponent, computed } from "vue";
+import styles from './style.module.scss'
 
 export const Range = defineComponent({
     name: 'custom-range',
@@ -8,7 +9,7 @@ export const Range = defineComponent({
         end: Number,
         style: {
             type: Object,
-            default: { height: '30px', width: '200px', outline: "none" }
+            default: { height: '30px', width: '200px' }
         }
     },
     emits: ['update:start', 'update:end'],
@@ -33,7 +34,7 @@ export const Range = defineComponent({
         })
 
         return () => {
-            return <div class='range' style={props.style}>
+            return <div class={styles.range} style={props.style}>
                 <input type="text" v-model={start.value} placeholder="开始范围" />
                 <span>~</span>
                 <input type="text" v-model={end.value} placeholder="结束范围" />

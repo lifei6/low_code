@@ -1,5 +1,7 @@
 // 内容菜单框
 import { computed, createVNode, defineComponent, onBeforeUnmount, onMounted, reactive, render, ref, provide } from "vue";
+// 样式
+import styles from './style.module.scss'
 
 const BlockContextMenu = defineComponent({
     props: {
@@ -60,7 +62,7 @@ const BlockContextMenu = defineComponent({
 
         return () => {
             return state.isShow && (
-                <div class='block-menu' style={menuStyle.value} ref={el}>
+                <div class={styles.menu} style={menuStyle.value} ref={el}>
                     {
                         state.option.context()
                     }

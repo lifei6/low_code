@@ -3,7 +3,7 @@
 import useCommandsStore from "@/packages/store/commands/commands";
 import deepcopy from "deepcopy";
 import { defineComponent } from "vue";
-
+import styles from './style.module.scss'
 
 export default defineComponent({
     props: {
@@ -97,24 +97,24 @@ export default defineComponent({
             // 横向可拖
             if (width) {
                 dots.push(<>
-                    <div class="dot start-center" onMousedown={e => dotMousedown(e, { horizontal: 'start', vertical: 'center' })}></div>
-                    <div class="dot end-center" onMousedown={e => dotMousedown(e, { horizontal: 'end', vertical: 'center' })}></div>
+                    <div class={[styles.dot, styles.startCenter]} onMousedown={e => dotMousedown(e, { horizontal: 'start', vertical: 'center' })}></div>
+                    <div class={[styles.dot, styles.endCenter]} onMousedown={e => dotMousedown(e, { horizontal: 'end', vertical: 'center' })}></div>
                 </>)
             }
             // 纵向可拖
             if (height) {
                 dots.push(<>
-                    <div class="dot center-start" onMousedown={e => dotMousedown(e, { horizontal: 'center', vertical: 'start' })}></div>
-                    <div class="dot center-end" onMousedown={e => dotMousedown(e, { horizontal: 'center', vertical: 'end' })}></div>
+                    <div class={[styles.dot, styles.centerStart]} onMousedown={e => dotMousedown(e, { horizontal: 'center', vertical: 'start' })}></div>
+                    <div class={[styles.dot, styles.centerEnd]} onMousedown={e => dotMousedown(e, { horizontal: 'center', vertical: 'end' })}></div>
                 </>)
             }
             // 横纵都可
             if (width && height) {
                 dots.push(<>
-                    <div class="dot start-start" onMousedown={e => dotMousedown(e, { horizontal: 'start', vertical: 'start' })}></div>
-                    <div class="dot end-start" onMousedown={e => dotMousedown(e, { horizontal: 'end', vertical: 'start' })}></div>
-                    <div class="dot start-end" onMousedown={e => dotMousedown(e, { horizontal: 'start', vertical: 'end' })}></div>
-                    <div class="dot end-end" onMousedown={e => dotMousedown(e, { horizontal: 'end', vertical: 'end' })}></div>
+                    <div class={[styles.dot, styles.startStart]} onMousedown={e => dotMousedown(e, { horizontal: 'start', vertical: 'start' })}></div>
+                    <div class={[styles.dot, styles.endStart]} onMousedown={e => dotMousedown(e, { horizontal: 'end', vertical: 'start' })}></div>
+                    <div class={[styles.dot, styles.startEnd]} onMousedown={e => dotMousedown(e, { horizontal: 'start', vertical: 'end' })}></div>
+                    <div class={[styles.dot, styles.endEnd]} onMousedown={e => dotMousedown(e, { horizontal: 'end', vertical: 'end' })}></div>
                 </>)
             }
             return <>

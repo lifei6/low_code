@@ -2,6 +2,9 @@ import { defineComponent, inject } from "vue";
 import useCommandsStore from "@/packages/store/commands/commands"
 import { useMenvDragger } from "@/packages/hooks/useMenvDragger";
 
+// 样式
+import styles from './style.module.scss'
+
 // 左侧菜单栏
 export default defineComponent({
     name: 'editor-left',
@@ -20,7 +23,7 @@ export default defineComponent({
                     {config.componentList.map((component, idx) => {
                         return (
                             <div
-                                class="editor-left-item"
+                                class={styles.item}
                                 //开启拖拽绑定回调
                                 draggable
                                 ondragstart={e => dragstart(e, component)}

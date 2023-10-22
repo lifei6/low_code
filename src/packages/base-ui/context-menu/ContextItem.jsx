@@ -1,5 +1,6 @@
 import { defineComponent, inject } from "vue";
-
+// 样式
+import styles from './style.module.scss'
 
 export const ContextItem = defineComponent({
     props: {
@@ -11,7 +12,7 @@ export const ContextItem = defineComponent({
         return () => {
             let { icon, label } = props
             return (
-                <div class='block-menu-item' onClick={e => hidden()}>
+                <div class={styles.item} onClick={e => hidden()}>
                     <i class={`iconfont ${icon}`}></i>
                     <span>{label}</span>
                 </div>

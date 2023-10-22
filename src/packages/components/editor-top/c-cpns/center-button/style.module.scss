@@ -1,0 +1,31 @@
+.center {
+  width: 900px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  // border: 1px solid red;
+  font-size: 12px;
+  .button {
+    // margin: 0 10px;
+    width: 80px;
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    user-select: none;
+    cursor: pointer;
+    color: #404040;
+    > .iconfont {
+      font-size: 20px;
+      color: #404040;
+    }
+    // .icon-daoru,.icon-daochu1 {
+    //     font-size: 25px;
+    // }
+    > .label {
+      padding-top: 6px;
+    }
+  }
+}

@@ -1,5 +1,4 @@
 // 菜单按钮配置
-
 import { $dialog } from "@/packages/base-ui/dialog/Dialog"
 import useCommandsStore from "@/packages/store/commands/commands"
 import useSystemStore from "@/packages/store/system/system"
@@ -12,7 +11,7 @@ export function useButton() {
         { label: () => '撤销', icon: 'icon-shangyibu', handler: commandsStore.undo },
         { label: () => '重做', icon: 'icon-xiayibu', handler: commandsStore.redo },
         {
-            label: () => '导入', icon: 'icon-daoru', handler: () => {
+            label: () => '导入JSON', icon: 'icon-daoru', handler: () => {
                 // 弹出一个对话框
                 $dialog({
                     title: 'JSON数据导入',
@@ -26,7 +25,7 @@ export function useButton() {
             }
         },
         {
-            label: () => '导出', icon: 'icon-daochu1', handler: () => {
+            label: () => '导出JSON', icon: 'icon-daochu1', handler: () => {
                 // 弹出一个对话框
                 $dialog({
                     title: 'JSON数据导出',

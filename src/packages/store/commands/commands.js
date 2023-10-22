@@ -395,9 +395,9 @@ const useCommandsStore = defineStore('commands', {
 
 
         // TODO:测试vuedrag
-        checkIsSub(newValue) {
-            this.lastSelectBlock.isSub = newValue
-        }
+        // checkIsSub(newValue) {
+        //     this.lastSelectBlock.isSub = newValue
+        // }
     },
     getters: {
         // 最后选择的元素

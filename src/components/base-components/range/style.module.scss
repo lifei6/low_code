@@ -1,0 +1,14 @@
+// 范围框
+.range {
+  margin: 0 auto;
+  width: 200px;
+  height: 30px;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  > input {
+    width: 40%;
+    height: 80%;
+    min-height: 25px;
+  }
+}

@@ -1,8 +1,8 @@
 // json数据的key和  物料区组件 和 实例组件 以及 属性操作栏预设属性配置框 的映射关系
 // key====>{preview:,render:,key:,props:,model:}
 
-import { Range } from "@/components/base-components/Range";
-import { Text } from "@/components/base-components/Text";
+import { Range } from "@/components/base-components/range/Range";
+import { Text } from "@/components/base-components/text/Text";
 import { ElButton, ElInput, ElOption, ElSelect } from "element-plus";
 
 
