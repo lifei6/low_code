@@ -10,8 +10,6 @@ const useCommandsStore = defineStore('commands', {
         container: deepcopy(data.container),
         // 组件信息
         components: deepcopy(data.blocks),
-        //当前组件索引
-        selectIndex: -1,
 
 
         // 历史记录--------------------
@@ -26,28 +24,39 @@ const useCommandsStore = defineStore('commands', {
     actions: {
         // 更新历史记录
         updateHistory(historyRecord) {
-            if (this.histories.length < this.maxHistoryNumber) {
-                this.histories.push(historyRecord);
-                this.historyIndex++
+            // 操作后选中状态的记录，用于撤销
+            const preFocusId = this.focusData.focus.map(({ id }) => id)
+            historyRecord.preFocusId = preFocusId
+            if (this.historyIndex + 1 < this.maxHistoryNumber) {
+                // 未超过最大记录值
+                this.histories[++this.historyIndex] = historyRecord
             } else {
+                // 超过最大记录值
                 this.histories.shift();
                 this.histories.push(historyRecord);
             }
         },
         // 撤销
+        // 撤销的状态记录链表用preFocusId记录
         undo() {
             // 如果撤销到了头部了则直接返回
             if (this.historyIndex === -1) {
                 console.log('没有可撤销的历史记录了')
                 return;
             }
+            // 获取当前历史记录进行方向操作
             const history = this.histories[this.historyIndex];
+
+            // 记录用于重做的聚焦状态记录(即撤销之前，现在所处于的状态)
+            const nowFocusId = this.focusData.focus.map(({ id }) => id)
+            history.nowFocusId = nowFocusId
 
             switch (history.changeType) {
                 case "add":
-                    this.components = this.components.filter(
-                        (component) => component.id !== history.componentId
-                    );
+                    // 获取新增元素的索引
+                    const componentIndex = this.idToMapIndex[history.componentId]
+                    // 进行删除
+                    this.components.splice(componentIndex, 1)
                     break;
                 case "delete": {
                     history.data.forEach((component, index) => {
@@ -68,10 +77,16 @@ const useCommandsStore = defineStore('commands', {
                     const { componentId, data } = history
                     const { startPos } = data
                     componentId.forEach((id, index) => {
-                        let cIndex = this.components.findIndex((component) => component.id === id)
+                        let cIndex = this.idToMapIndex[id]
                         this.components[cIndex]["top"] = startPos[index]["top"]
                         this.components[cIndex]["left"] = startPos[index]["left"]
                     })
+                    // 清理非更新位置元素的状态
+                    // this.focusData.focus.forEach((component, idx) => {
+                    //     if (!componentId.includes(component.id)) {
+                    //         component.focus = false
+                    //     }
+                    // })
                     break;
                 }
                 case "updateSize": {
@@ -87,7 +102,7 @@ const useCommandsStore = defineStore('commands', {
                     const { componentId, data } = history
                     const { key, oldValues } = data
                     componentId.forEach((id, index) => {
-                        let cIndex = this.components.findIndex((component) => component.id === id)
+                        let cIndex = this.idToMapIndex[id]
                         this.components[cIndex][key] = oldValues[index]
                     })
                     break;
@@ -102,14 +117,41 @@ const useCommandsStore = defineStore('commands', {
                     break;
             }
             this.historyIndex--
+
+
+            // 清理所有聚焦
+            this.clearAllFocus()
+            // 选中状态的回退前一个历史记录的聚集状态
+            if (this.historyIndex >= 0) {
+                const preHistory = this.histories[this.historyIndex]
+                const preFocusId = preHistory.preFocusId
+                // 把记录的聚焦状态恢复
+                this.components.forEach((component, idx) => {
+                    if (preFocusId.includes(component.id)) {
+                        component.focus = true
+                    }
+                })
+            }
+
         },
         // 重做
+        // 重做的状态记录链表用nowFocusId记录
         redo() {
             // 不能超过尾部历史记录
             if (this.historyIndex >= this.histories.length - 1) {
                 console.log('没有可以重做的历史记录了')
                 return
             }
+
+            // 操作当前历史记录
+            // 记录用于重做的聚焦状态记录(即撤销之前，现在所处于的状态)
+            // 撤销后进行了选中更新，因此更新撤销操作之后的一系列状态(用于撤销)
+            if (this.historyIndex >= 0) {
+                const preFocusId = this.focusData.focus.map(({ id }) => id)
+                this.histories[this.historyIndex].preFocusId = preFocusId
+            }
+
+            // 指向后一个历史记录
             this.historyIndex++
             const history = this.histories[this.historyIndex];
             switch (history.changeType) {
@@ -117,9 +159,10 @@ const useCommandsStore = defineStore('commands', {
                     this.components.push(history.data);
                     break;
                 case "delete":
-                    this.components = this.components.filter(
-                        (component) => history.componentId.indexOf(component.id) === -1
-                    );
+                    // 删除可能一次性删除多个哦
+                    this.components = this.components.filter((component, idx) => {
+                        return !history.index.includes(idx)
+                    })
                     break;
                 case "modify": {
                     const { componentId, data } = history;
@@ -134,7 +177,7 @@ const useCommandsStore = defineStore('commands', {
                     const { componentId, data } = history
                     const { endPos } = data
                     componentId.forEach((id, index) => {
-                        let cIndex = this.components.findIndex((component) => component.id === id)
+                        let cIndex = this.idToMapIndex[id]
                         this.components[cIndex]["top"] = endPos[index]["top"]
                         this.components[cIndex]["left"] = endPos[index]["left"]
                     })
@@ -143,17 +186,21 @@ const useCommandsStore = defineStore('commands', {
                 case "updateSize": {
                     const { index, data } = history
                     const { newSize } = data
-                    this.components[index]['width'] = newSize.width
-                    this.components[index]['height'] = newSize.height
-                    this.components[index]['top'] = newSize.top
-                    this.components[index]['left'] = newSize.left
+                    const component = this.components[index]
+                    component.width = newSize.width
+                    component.height = newSize.height
+                    component.top = newSize.top
+                    component.left = newSize.left
+                    // 有bug,数据变了页面不更新
+                    // 强制更新
+                    // this.$patch()
                     break;
                 }
                 case "updatezIndex": {
                     const { componentId, data } = history;
                     const { key, newValues } = data
                     componentId.forEach((id, index) => {
-                        let cIndex = this.components.findIndex((component) => component.id === id)
+                        let cIndex = this.idToMapIndex[id]
                         this.components[cIndex][key] = newValues[index]
                     })
                     break;
@@ -167,7 +214,17 @@ const useCommandsStore = defineStore('commands', {
                 default:
                     break;
             }
+
+            // 清理所有聚焦
+            this.clearAllFocus()
+            // 还需要把记录的聚焦状态恢复
+            this.components.forEach((component, idx) => {
+                if (history.nowFocusId.includes(component.id)) {
+                    component.focus = true
+                }
+            })
         },
+
         // 导入页面的JSON
         updateContainer(newData) {
             let beforeData = { container: deepcopy(this.container), blocks: deepcopy(this.components) }
@@ -193,8 +250,10 @@ const useCommandsStore = defineStore('commands', {
                 data: { oldCpn, newCpn }
             })
         },
-        // 新增
+        // 新增组件
         addComponent(component) {
+            // 新增需要清除其他组件的选中状态
+            this.clearAllFocus()
             component.id = uuidv4();
             this.components.push(component);
             this.updateHistory({
@@ -204,7 +263,7 @@ const useCommandsStore = defineStore('commands', {
                 data: deepcopy(component),//操作数据
             });
         },
-        // 更新
+        // 更新组件
         updateComponent({ id, key, value, isProps }) {
             const updatedComponent = this.components.find(
                 (component) => component.id === (id || this.currentElement)
@@ -228,37 +287,37 @@ const useCommandsStore = defineStore('commands', {
             }
 
         },
-        // 删除
+        // 删除组件
         deleteComponent() {
+            // 删除操作之前需记录当前聚焦状态，用于撤销
+            this.updatePreFocusId()
+
             // 获取删除的元素
             const componentData = this.focusData.focus
             // 没有选择元素，不能删除，也不能有历史快照
             if (componentData.length <= 0) return
-            // 当前选中元素ids
+            // 当前删除元素ids
             let ids = componentData.map((component) => component.id)
-
-            // 获取元素的索引
+            // 获取删除元素的索引
             const componentIndex = []
             ids.forEach((id) => {
-                let index = this.components.findIndex((component) => component.id === id)
-                if (index !== -1) {
-                    componentIndex.push(index)
-                }
+                componentIndex.push(this.idToMapIndex[id])
             })
             // 过滤出未删除元素
             this.components = this.components.filter(
-                (component) => ids.indexOf(component.id) === -1
+                (component, idx) => !componentIndex.includes(idx)
             );
             this.updateHistory({
                 id: uuidv4(),
-                componentId: ids,
                 changeType: "delete",
-                data: componentData,
-                index: componentIndex,
+                index: componentIndex,//删除的组件索引列表
+                data: componentData,//删除的组件列表
             });
         },
         // 置顶
         top() {
+            this.updatePreFocusId()
+
             if (this.focusData.focus.length <= 0) return
             // 找到没有获取焦点元素的最高层，将选中元素在此基础上加1
             let maxIndex = this.focusData.unfocus.reduce((pre, component) => {
@@ -283,6 +342,7 @@ const useCommandsStore = defineStore('commands', {
         },
         // 置底
         bottom() {
+            this.updatePreFocusId()
             if (this.focusData.focus.length <= 0) return
             // 找到没有获取焦点元素的最底层，将选中元素在此基础上加-1
             let minIndex = this.focusData.unfocus.reduce((pre, component) => {
@@ -321,17 +381,22 @@ const useCommandsStore = defineStore('commands', {
         },
 
 
+        // 聚集状态相关-------------------
+        // 更新当前历史记录的preFocusID
+        updatePreFocusId() {
+            const preFocusId = this.focusData.focus.map(({ id }) => id)
+            this.histories[this.historyIndex].preFocusId = preFocusId
+        },
         // 清空所有选中状态
         clearAllFocus() {
-            this.components.forEach(component => {
+            this.focusData.focus.forEach(component => {
                 component.focus = false
             })
-            // 取消选中 索引置为-1
-            this.selectIndex = -1
         },
         // 按住shift切换选中状态
         switchFocus(e, id) {
-            let component = this.components.find((item) => item.id === id)
+            const index = this.idToMapIndex[id]
+            const component = this.components[index]
             if (e.shiftKey) {
                 // 如果只有一个就别切换了，一直选中
                 if (this.focusData.focus.length <= 1) {
@@ -348,10 +413,10 @@ const useCommandsStore = defineStore('commands', {
                 }
             }
         },
-        // 更新当前元素索引
-        updateSelectIndex(index) {
-            this.selectIndex = index
-        },
+        // -------------------------------
+
+
+        // 渲染区拖拽更新相关---------------
         // 更新移动元素的布局
         updateComponentsLayout(dragstate, durY, durX) {
             this.focusData.focus.forEach((component, idx) => {
@@ -359,18 +424,21 @@ const useCommandsStore = defineStore('commands', {
                 component.left = dragstate.startPos[idx].left + durX
             })
         },
-        // 记录鼠标松开后的历史记录
+        // 更新组件位置
         recordComponentsLayout(startPos) {
+            // 更新一下聚焦状态记录
+            this.updatePreFocusId()
+
             let ids = this.focusData.focus.map((component) => component.id)
             const endPos = this.focusData.focus.map(({ top, left }) => ({ top, left }))
             this.updateHistory({
                 id: uuidv4(),
                 componentId: ids,
                 changeType: 'updatePosition',
-                data: { startPos, endPos }
+                data: { startPos, endPos }//开始位置、结束位置
             })
         },
-        // 更新元素的大小
+        // 更新组件大小
         updateComponentSize(oldPos) {
             const oldSize = { width: oldPos.startWidth, height: oldPos.startHeight, top: oldPos.startTop, left: oldPos.startLeft }
             const { width, height, top, left } = this.lastSelectBlock
@@ -379,19 +447,24 @@ const useCommandsStore = defineStore('commands', {
                 id: uuidv4(),
                 index: this.selectIndex,
                 changeType: 'updateSize',
-                data: { oldSize, newSize }
+                data: Object.freeze({ oldSize, newSize })
             })
         },
+        // ---------------------------------
 
-
-        // 更新容器属性
-        updateContainerProps(editData) {
-            this.container = editData
-        },
+        // 右侧属性编辑的历史快照---------------
         // 更新单个组件属性
         updateBlockProps(editData) {
             this.components[this.selectIndex] = editData
         },
+        // ---------------------------------
+
+        // 不具有历史记录的操作------------
+        // 更新容器属性
+        updateContainerProps(editData) {
+            this.container = editData
+        },
+
 
 
         // TODO:测试vuedrag
@@ -400,6 +473,26 @@ const useCommandsStore = defineStore('commands', {
         // }
     },
     getters: {
+        // 组件id及其位置关系映射表
+        idToMapIndex: (state) => {
+            const map = state.components.reduce((pre, cur, index) => {
+                pre[cur.id] = index
+                return pre
+            }, {})
+            return map
+        },
+        // 当前组件索引
+        // 更新选中元素索引
+        selectIndex: (state) => {
+            let index = -1;
+            // 有选中一个或多个元素，则聚焦的最后一个就是当前选中元素
+            let len = state.focusData.focus.length
+            if (len) {
+                let id = state.focusData.focus[len - 1].id
+                index = state.idToMapIndex[id]
+            }
+            return index
+        },
         // 最后选择的元素
         lastSelectBlock: (state) => {
             return state.components[state.selectIndex]
@@ -419,6 +512,7 @@ const useCommandsStore = defineStore('commands', {
         },
         // 辅助线：未选择元素的关键点
         points: (state) => {
+            console.log('卡顿')
             const points = []
             // 2.获取未选中元素A的信息
             state.focusData.unfocus.forEach((block) => {

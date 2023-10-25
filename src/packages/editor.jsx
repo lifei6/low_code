@@ -13,7 +13,7 @@
 // 4.属性操作区：能根据组件注册时的prop和model渲染对应的视图，能与block实现双向绑定
 
 
-import { defineComponent, ref } from "vue"
+import { defineComponent, ref, provide } from "vue"
 
 // 引入第三方库
 import { ElButton } from "element-plus"
@@ -38,7 +38,7 @@ export default defineComponent({
         // 1.菜单（物料区的组件菜单）拖拽
         // 获取目标元素-------判断拖拽元素与目标元素的位置关系：刚进入，在上面移动，出目标元素
         const containerRef = ref(null)
-
+        provide("containerRef", containerRef)
 
         // // 6.编辑属性 应用属性
         // const updateContainerProps = (newProps) => {
@@ -59,17 +59,19 @@ export default defineComponent({
         // 预览和编辑模式渲染的DOM
         return () => systemStore.editor ? (
             <div class="editor">
-                <div class='editor-left'>
-                    <EditorLeft containerRef={containerRef}></EditorLeft>
-                </div>
                 <div class="editor-top">
                     <EditorTop></EditorTop>
                 </div>
-                <div class="editor-right">
-                    <EditorRight></EditorRight>
-                </div>
-                <div class="editor-container">
-                    <EditorContainer containerRef={containerRef}></EditorContainer>
+                <div class="main">
+                    <div class='editor-left'>
+                        <EditorLeft></EditorLeft>
+                    </div>
+                    <div class="editor-right">
+                        <EditorRight></EditorRight>
+                    </div>
+                    <div class="editor-container">
+                        <EditorContainer containerRef={containerRef}></EditorContainer>
+                    </div>
                 </div>
             </div>
         ) : (

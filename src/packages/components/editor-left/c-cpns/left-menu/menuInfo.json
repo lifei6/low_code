@@ -1,0 +1,22 @@
+{
+    "menu": [
+        {
+            "id": "001",
+            "name": "页面",
+            "icon": "document",
+            "path": "/main/document"
+        },
+        {
+            "id": "002",
+            "name": "基础组件",
+            "icon": "base",
+            "path": "/main/base"
+        },
+        {
+            "id": "003",
+            "name": "容器组件",
+            "icon": "container",
+            "path": "/main/container"
+        }
+    ]
+}

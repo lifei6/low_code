@@ -5,6 +5,7 @@ export const useMenvDragger = function (containerRef, commandsStore) {
 
     //目标元素相关回调
     const dragenter = (e) => {
+        e.preventDefault()
         e.dataTransfer.dropEffect = "move"
     }
     const dragover = (e) => {
@@ -22,6 +23,7 @@ export const useMenvDragger = function (containerRef, commandsStore) {
             left: e.offsetX,
             zIndex: 1,
             alignCenter: true,
+            focus: true,//默认新增为选中状态
             props: {},
             model: {}
         }
@@ -31,6 +33,9 @@ export const useMenvDragger = function (containerRef, commandsStore) {
 
     //1.开始拖拽
     const dragstart = (e, component) => {
+        // 设置为移动标识(默认是有个加号标识copy)
+        e.dataTransfer.effectAllowed = 'move'
+
         currentComponent = component
         // 2为目标元素绑定拖拽行为
         // 2.1进入元素触发,添加一个移动标识

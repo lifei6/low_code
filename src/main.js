@@ -9,7 +9,8 @@ import 'element-plus/dist/index.css'
 import '@/assets/css/index.scss'
 
 import App from './App.vue'
-// 引入仓库
+// 路由和pinia
+import router from './router'
 import store from './store'
 
 // elemnet图标注册为全局组件
@@ -41,4 +42,5 @@ window.ResizeObserver = class ResizeObserver extends _ResizeObserver {
 const app = createApp(App)
 app.use(icons)
 app.use(store)
+app.use(router)
 app.mount('#app')

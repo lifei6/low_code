@@ -11,6 +11,7 @@ import { useContextmenu } from "@/packages/hooks/useBlockContextmenu";
 
 // 样式
 import styles from './style.module.scss'
+import { storeToRefs } from "pinia";
 
 export default defineComponent({
     name: 'editor-container',
@@ -19,6 +20,7 @@ export default defineComponent({
     },
     setup(props) {
         // 1.全局响应式数据--------------更新组件列表更新整个页面
+        // const commandsStore = storeToRefs(useCommandsStore())
         const commandsStore = useCommandsStore()
         const systemStore = useSystemStore()
 
@@ -57,12 +59,12 @@ export default defineComponent({
                             onMousedown={e => commandsStore.clearAllFocus(e)}
                         >
                             {
-                                commandsStore.components.map((block, index) => (
+                                commandsStore.components.map((block) => (
                                     <EditorBlock
                                         class={[block.focus ? styles.focus : '', systemStore.preview ? styles.preview : '']}
                                         block={block}
                                         // 点击拖拽或者点击聚焦
-                                        onMousedown={e => blockMousedown(e, block.id, index)}
+                                        onMousedown={e => blockMousedown(e, block.id)}
                                         // 元素右击菜单事件
                                         onContextmenu={e => blockContextmenu(e, block)}
                                         //预览模式

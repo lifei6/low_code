@@ -1,0 +1,33 @@
+.menu {
+  width: 100px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.item {
+  // border: 1px solid red;
+  height: 100px;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    color: #409eff;
+  }
+
+  // 添加切换动画
+  // transition: border-right 2s ease-in;
+  > span {
+    margin-top: 15px;
+  }
+}
+
+.active {
+  color: #409eff;
+  border-right: #409eff 2px solid;
+}
