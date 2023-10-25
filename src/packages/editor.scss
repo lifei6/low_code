@@ -35,16 +35,18 @@
   &-left {
     left: 0;
     width: 400px;
+    overflow: auto;
   }
 
   &-right {
     right: 0;
-    width: 270px;
+    width: 350px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
   }
 
   &-container {
     box-sizing: border-box;
-    margin: 0 270px 0 400px;
+    margin: 0 350px 0 400px;
     height: 100%;
     &-canvas {
       overflow: auto;

@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import data from '@/packages/data.json'
 import deepcopy from 'deepcopy';
 import { v4 as uuidv4 } from 'uuid';
+import { useGridSearch } from '@/packages/hooks/useGridSearch';
 // 历史记录的类型有：changeType = add | delete | update | importJSON ...
 
 const useCommandsStore = defineStore('commands', {
@@ -20,6 +21,10 @@ const useCommandsStore = defineStore('commands', {
         // 游标，用来标记变更的位置
         historyIndex: -1,
         // ---------------------------
+
+        // 网格算法------------------
+        gridSize: 50,
+
     }),
     actions: {
         // 更新历史记录
@@ -512,22 +517,29 @@ const useCommandsStore = defineStore('commands', {
         },
         // 辅助线：未选择元素的关键点
         points: (state) => {
-            console.log('卡顿')
-            const points = []
+            // 存储未选中的点
+            const unSelectoints = []
+            // 1.获取画布中心点
+            const { width: widthC, height: heightC } = state.container
+            unSelectoints.push([heightC / 2, widthC / 2, 'center'])
             // 2.获取未选中元素A的信息
             state.focusData.unfocus.forEach((block) => {
                 let { width: widthA, height: heightA, left: leftA, top: topA } = block
                 // 计算左上和右下和中心点
                 // 左上
-                points.push([leftA, topA])
+                unSelectoints.push([topA, leftA])
                 // 右下
-                points.push([leftA + widthA, topA + heightA])
+                unSelectoints.push([topA + heightA, leftA + widthA])
                 // 中心
-                points.push([leftA + widthA / 2, topA + heightA / 2])
+                unSelectoints.push([topA + heightA / 2, leftA + widthA / 2, 'center'])
             })
-            return points
-        }
+            return unSelectoints
+        },
         // 选中点的矩形信息
+        // 网格实例存储未选中点
+        gridSearch: (state) => {
+            return useGridSearch(state.points, state.container.height, state.container.width, state.gridSize)
+        }
     }
 })
 

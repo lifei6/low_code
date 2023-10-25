@@ -21,8 +21,33 @@ export function useBlockDragger(commandsStore) {
     const mousedown = (e) => {
         // 鼠标按下默认没有拖拽
         dragstate.dragging = false
+        // 一、收集未选中节点信息和选中元素信息------------
+        // 1.获取中心点
+        const { width: widthC, height: heightC } = commandsStore.container
+        // 2.未选择的点
+        const getPoints = () => {
+            const points = []
+            // 获取未选中元素A的信息
+            commandsStore.focusData.unfocus.forEach((block) => {
+                let { width: widthA, height: heightA, left: leftA, top: topA } = block
+                // 计算左上和右下和中心点
+                // 左上
+                points.push([topA, leftA])
+                // 右下
+                points.push([topA + heightA, leftA + widthA])
+                // 中心
+                points.push([topA + heightA / 2, leftA + widthA / 2, 'center'])
+            })
+            // 添加画布中心对称点
+            points.push([heightC / 2, widthC / 2, 'center'])
+            return points
+        }
+        // 3.实例化网格算法存储这些点
+        const gridSize = 50
+        const points = getPoints()
+        const gridSearch = useGridSearch(points, heightC, widthC, gridSize)
 
-        // 初始化拖拽状态
+        // 4.初始化拖拽状态
         dragstate = {
             startX: e.clientX,
             startY: e.clientY,
@@ -31,6 +56,8 @@ export function useBlockDragger(commandsStore) {
             startTop: commandsStore.lastSelectBlock.top,
             // 记录每一个选中元素的开始位置[(top,left),(top,left)]
             startPos: deepcopy(commandsStore.focusData.focus.map(({ top, left }) => ({ top, left }))),
+            // 已经记录所有需要搜索点的网格算法实例
+            gridSearch
         }
 
 
@@ -43,6 +70,7 @@ export function useBlockDragger(commandsStore) {
         if (!dragstate.dragging) {
             dragstate.dragging = true
         }
+
         // 记录当前的位置
         let { clientX: endX, clientY: endY } = e
         // 计算元素最新的top和left（实际还没更新，只是可以通过计算出来）
@@ -59,8 +87,8 @@ export function useBlockDragger(commandsStore) {
         // console.log(rectangleX)
         // console.log(rectangleY)
         // 2.求解矩形所包含的所有点
-        let pointX = commandsStore.gridSearch.searchRect(rectangleX)
-        let pointY = commandsStore.gridSearch.searchRect(rectangleY)
+        let pointX = dragstate.gridSearch.searchRect(rectangleX)
+        let pointY = dragstate.gridSearch.searchRect(rectangleY)
         // 3.横纵分开计算
         // 获取横向x
         let arrX = []

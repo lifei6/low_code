@@ -134,8 +134,8 @@ registerConfig.register({
         ></Range>
     },
     model: {
-        start: '绑定开始范围字段',
-        end: '绑定结束范围字段'
+        start: '开始字段',
+        end: '结束字段'
     }
 })
 
